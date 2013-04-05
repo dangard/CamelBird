@@ -1,4 +1,3 @@
 RewriteEngine on
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule .* index.php/$0 [PT,L] 
+RewriteCond $1 !^(index\.php|js|images|css|robots\.txt)
+RewriteRule ^(.*)$ /camelbird/index.php/$1 [L]
