@@ -27,7 +27,16 @@
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
+              "src/android-chrome-144x144.png",
+              "src/browserconfig.xml",
+              "src/favicon-16x16.png",
+              "src/mstile-150x150.png",
+              "src/site.webmanifest",
+              "src/apple-touch-icon.png",
               "src/favicon.ico",
+              "src/favicon-32x32.png",
+              "src/safari-pinned-tab.svg",
+              "src/.htaccess",
               "src/assets"
             ],
             "styles": [
