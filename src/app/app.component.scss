@@ -1,7 +1,7 @@
 @import "src/app/pallette.scss";  
 
  #heroImage {
-	 background-image: url("../assets/AdobeStock_208230550.jpeg");
+	 background-image: url("/assets/AdobeStock_208230550.jpeg");
 	 background-color: #000;
 	 background-position: 10% 25%;
 	 position: relative;
@@ -9,6 +9,10 @@
 	 height: 300px;
 	 margin: 20px 0 10px 0;
  }
+
+ .dropCap {
+    font-family: Gotham, "Helvetica Neue", Helvetica, Arial, "sans-serif";
+  }
 
   .spacer {
     flex: 1;
