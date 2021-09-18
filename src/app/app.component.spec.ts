@@ -37,7 +37,7 @@ describe('AppComponent', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.toolbar span')?.textContent).toContain('Welcome to CamelBird.com');
+    expect(compiled.querySelector('.toolbar span')?.textContent).toContain('CamelBird.com');
   });
            
   it('should render year', () => {
