@@ -1,0 +1,5 @@
+karma.conf.js
+angular.json
+package.json
+package-lock.json
+dist
