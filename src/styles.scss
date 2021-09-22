@@ -1,5 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
-@import "../node_modules/bootstrap/dist/css/bootstrap.css";
+@import "../node_modules/bootstrap/scss/bootstrap";
 @import "./assets/styles/colors.scss";
 	
 body {
@@ -13,6 +13,29 @@ body {
   .spacer {
     flex: 1;
   }
+
+nav {
+      ul {
+        li {
+            a.nav-link {
+                color: #fff;
+                &:hover {
+                  color: #fff;
+                }
+                &:active {
+                  color: #fff;
+                }
+                &:visited {
+                  color: #fff;
+                }
+                &.active {
+                  background-color: $heading-color-secondary;
+                  color: #fff;
+                }
+            }
+        }
+      }   
+}
 
   a:hover {
       font-weight: bold;
@@ -54,6 +77,15 @@ body {
     margin: 0 16px;
   }
 
+  .toolbar .hamburger-menu {
+    visibility: hidden;
+    position: absolute;
+    top: 10x;
+    left: 0;
+    height: 40px;
+    margin: 0 16px 0 8px;
+  }
+
   .toolbar #camel-logo {
     position: absolute;
     top: 10x;
@@ -93,8 +125,6 @@ body {
     align-items: center;
   }
 
-
-
   footer {
     margin-top: 8px;
     margin-bottom: 8px;
@@ -131,4 +161,31 @@ body {
     height: 16px;
     width: 16px;
     margin-right: 4px;
+  }
+
+  @media only screen and (max-width: 980px) {
+    .navbar {
+        position: absolute;
+        top: 0;
+        left: 10px;
+        visibility: collapse;
+    }
+    
+    .toolbar {
+      .hamburger-menu {
+          visibility: visible;
+      }
+      span {
+        left: 108px;
+      }
+      #camel-logo {
+          left: 50px;
+      }
+    }
+
+      
+    #heroImage {
+        display: none;
+        visibility: hidden;
+    }
   }
