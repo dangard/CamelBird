@@ -1,32 +1,12 @@
-<!-- Toolbar -->
-<div class="toolbar" role="banner">
-    <img class="hamburger-menu" src="https://img.icons8.com/ios-filled/50/ffffff/menu--v1.png"/>
-    <img id="camel-logo" alt="Github Logo" src="/assets/zflyingcamel.gif" />
-    <span>{{ title }}.com</span>
-    <div class="spacer"></div>
-    <!-- This nav gives you links to click, which tells the router which route to use (defined in the routes constant in  AppRoutingModule) -->
-    <nav>
-      <ul class="nav flex-column flex-sm-row">
-        <li class="nav-item"><a class="nav-link" routerLink="/accomplishments" routerLinkActive="active">Accomplishments</a></li>
-        <li class="nav-item"><a class="nav-link" routerLink="/devblog" routerLinkActive="active">Dev Blog</a></li>
-        <li class="nav-item"><a class="nav-link" routerLink="/interests" routerLinkActive="active">Interests</a></li>
-      </ul>
-    </nav>
-    <div class="spacer"></div>
-	<a aria-label="Github link" target="_blank" rel="noopener" href="https://github.com/dangard" title="Github">
-		<img id="github-logo" alt="Github Logo" src="/assets/GitHub-Mark-Light-32px.png" height="24" />
-    </a>
-    <a aria-label="Daniel on Linked In" target="_blank" rel="noopener" href="https://www.linkedin.com/in/dangard/" title="Linked In">
-        <img id="linked-in-logo" alt="Linked In Logo" src="/assets/LI-In-Bug.png" height="24" />
-    </a>
+<app-header></app-header>
+<div class="container-fluid bg-light" role="main">
+  <div class="row">
+    <div class="col-md-1 align-content-start bg-dark"></div>
+    <div class="col-lg-10 col-sm-12 align-items-center bg-light gx-5">
+      <!-- The routed views render in the <router-outlet>-->
+      <router-outlet></router-outlet>
+    </div>
+    <div class="col-md-1  align-items-end bg-dark"></div>
+  </div>
 </div>
-
-<div class="content" role="main">
-<!-- The routed views render in the <router-outlet>-->
-<router-outlet></router-outlet>
-
-  <!-- Footer -->
-  <footer>
-      Copyright © 2000-{{ year }} Daniel Gardner
-  </footer>
-</div>
+<app-footer></app-footer>
