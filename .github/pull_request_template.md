@@ -1,7 +1,7 @@
-#### Description
+## Description
 Brief Description of work being don.
 Issue: Isse number if a bug fix.
 
-## ToDo
+### ToDo
 - [] ng test passed
 - [] eslint passed.
