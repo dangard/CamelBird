@@ -1,0 +1,52 @@
+@import "../../../../assets/styles/colors.scss";
+
+nav.navbar {
+  .navbar-brand {
+    #camel-logo {
+      border-radius: 20px;
+      width: 40px;
+    }
+  }
+
+  #linked-in-logo {
+    height: 32px;
+    margin: 0 8px;
+  }
+
+  #github-logo {
+    height: 32px;
+    margin: 0 8px;
+  }
+
+  #linked-in-logo:hover,
+  #github-logo:hover {
+    opacity: 0.8;
+  }
+
+  ul {
+    li {
+      a.nav-link {
+        color: #fff;
+        padding-left: 10px;
+        padding-right: 10px; 
+
+        &:hover {
+          color: #fff;
+        }
+
+        &:active {
+          color: #fff;
+        }
+
+        &:visited {
+          color: #fff;
+        }
+
+        &.active {
+          background-color: $heading-color-secondary;
+          color: #fff;
+        }
+      }
+    }
+  }
+}
