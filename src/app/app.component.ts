@@ -6,7 +6,6 @@ import { Component } from '@angular/core';
     styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-    title = 'CamelBird';
     date = new Date();
     year = this.date.getFullYear();
 }
