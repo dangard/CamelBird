@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AppConstants } from '../../core/app.constants';
 
 @Component({
   selector: 'app-devblog',
@@ -6,8 +7,11 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./devblog.component.scss']
 })
 export class DevblogComponent implements OnInit {
+  createUrl;
 
-  constructor() { }
+  constructor(private constants: AppConstants) {
+    this.createUrl = constants.OPERATIONS.DEVLOG.GET_ALL;
+  }
 
   ngOnInit(): void {
   }
