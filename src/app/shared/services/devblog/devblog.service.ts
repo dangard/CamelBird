@@ -53,11 +53,11 @@ export class DevblogService {
     this.getDevLogsUrl = this.constants.OPERATIONS.DEVLOG.GET_ALL;
   }
 
-  public getDevBlogs(): Array < { id:number, title:string, body:string, date:string } > {
+  public getDevBlogs(): Array < { id:any, title:string, body:string, date:string } > {
     return this.devblogs;
   }
   
-  public createDevBlog(devBlog: { id:number, title:string, body:string, date:string }) {
+  public createDevBlog(devBlog: { id:any, title:string, body:string, date:string }) {
     this.devblogs.push(devBlog);
   }
 }
