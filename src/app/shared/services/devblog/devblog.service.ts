@@ -1,10 +1,14 @@
 import { Injectable } from '@angular/core';
+import { AppConstants } from '../../../core/app.constants';
+import { environment } from '../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 
 export class DevblogService {
+  apiServerUrl: string = "";
+  getDevLogsUrl: string = "";
   devblogs = [
     {
       "id": 2,
@@ -44,11 +48,15 @@ export class DevblogService {
     }
   ];
 
-  constructor() {}
+  constructor(private constants: AppConstants) {
+    this.apiServerUrl = environment.apiServerUrl;
+    this.getDevLogsUrl = this.constants.OPERATIONS.DEVLOG.GET_ALL;
+  }
 
   public getDevBlogs(): Array < { id:number, title:string, body:string, date:string } > {
     return this.devblogs;
   }
+  
   public createDevBlog(devBlog: { id:number, title:string, body:string, date:string }) {
     this.devblogs.push(devBlog);
   }
