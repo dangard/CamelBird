@@ -8,9 +8,10 @@ import { AccomplishmentsComponent } from './pages/accomplishments/accomplishment
 import { InterestsComponent } from './pages/interests/interests.component';
 import { HeaderComponent } from './shared/components/header/header.component';
 import { FooterComponent } from './shared/components/footer/footer.component';
+import { DevblogListComponent } from './shared/components/devblog-list/devblog-list.component';
 
 @NgModule({
-    declarations: [AppComponent, DevblogComponent, AccomplishmentsComponent, InterestsComponent, HeaderComponent, FooterComponent],
+    declarations: [AppComponent, DevblogComponent, AccomplishmentsComponent, InterestsComponent, HeaderComponent, FooterComponent, DevblogListComponent],
     imports: [BrowserModule, AppRoutingModule],
     providers: [],
     bootstrap: [AppComponent],
