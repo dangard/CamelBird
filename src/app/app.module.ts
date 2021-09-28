@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
+import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { FormsModule } from '@angular/forms';
@@ -14,7 +14,7 @@ import { DevblogCreatorComponent } from './shared/components/devblog-creator/dev
 
 @NgModule({
     declarations: [AppComponent, DevblogComponent, AccomplishmentsComponent, InterestsComponent, HeaderComponent, FooterComponent, DevblogListComponent, DevblogCreatorComponent],
-    imports: [BrowserModule, AppRoutingModule, FormsModule],
+    imports: [BrowserModule, HttpClientModule, AppRoutingModule, FormsModule],
     providers: [],
     bootstrap: [AppComponent],
 })

@@ -12,8 +12,10 @@ export class DevblogListComponent implements OnInit {
 
   constructor(public dataService: DevblogService) { }
 
-  ngOnInit(): void {
-    this.devBlogs = this.dataService.getDevBlogs();
+  ngOnInit() {
+    this.dataService.getDevBlogs().subscribe(resp =>{
+      this.devBlogs = resp;
+    })  
   }
 
   public selectDevBlog(devBlog: any) {
