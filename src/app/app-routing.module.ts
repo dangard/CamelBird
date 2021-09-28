@@ -5,10 +5,10 @@ import { DevblogComponent } from './pages/devblog/devblog.component';
 import { InterestsComponent } from './pages/interests/interests.component';
 
 const routes: Routes = [
+  { path: '',   redirectTo: '/accomplishments', pathMatch: 'full' },
   { path: 'accomplishments', component: AccomplishmentsComponent },
   { path: 'interests', component: InterestsComponent },
-  { path: 'devblog', component: DevblogComponent },
-  { path: '',   redirectTo: '/accomplishments', pathMatch: 'full' }
+  { path: 'devblog', component: DevblogComponent }
 ];
 
 @NgModule({
