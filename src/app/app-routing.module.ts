@@ -8,6 +8,8 @@ const routes: Routes = [
   { path: 'accomplishments', component: AccomplishmentsComponent },
   { path: 'interests', component: InterestsComponent },
   { path: 'devblog', component: DevblogComponent },
+  { path: '/',   redirectTo: '/accomplishments' }
+  { path: '*',   redirectTo: '/accomplishments' }
   { path: '',   redirectTo: '/accomplishments', pathMatch: 'full' }
 ];
 
