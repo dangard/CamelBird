@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 export class AppConstants {
     public OPERATIONS = {
       DEVLOG: {
-        GET_ALL: "/devlogs",
+        GET_ALL: "/devlog",
         GET: "/devlogs",
         CREATE: "/devlogs"
       }
