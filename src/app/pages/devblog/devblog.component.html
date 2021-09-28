@@ -4,11 +4,11 @@
     <li class="breadcrumb-item active" aria-current="page">Dev Blog</li>
   </ol>
 </nav>
-<div class="row">
+<div class="row devblog-container">
   <div class="col-12">
     <app-devblog-list></app-devblog-list>
   </div>
-  <div class="col-12 col-sm-8 offset-sm-2">
+  <div class="col-12 col-sm-8 offset-sm-2" *ngIf="isCreateDevlogEnabled">
     <app-devblog-creator></app-devblog-creator>
   </div>
 </div>
