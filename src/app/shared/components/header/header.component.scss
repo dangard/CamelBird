@@ -31,6 +31,7 @@ nav.navbar {
         padding-right: 10px; 
 
         &:hover {
+          background-color: $heading-color-secondary;
           color: #fff;
         }
 
