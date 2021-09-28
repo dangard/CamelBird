@@ -5,8 +5,8 @@
 export const environment = {
     production: false,
     apiServerUrl: "http://localhost",
-    enableDevlogCreate: false,
-    enableDevBlog: false
+    enableDevlogCreate: true,
+    enableDevBlog: true
 };
 
 /*

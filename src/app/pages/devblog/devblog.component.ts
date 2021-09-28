@@ -13,7 +13,7 @@ export class DevblogComponent implements OnInit {
   constructor(private constants: AppConstants) { }
 
   ngOnInit(): void {
-    this.isCreateDevlogEnabled = environment.enableDevlogCreate;;
+    this.isCreateDevlogEnabled = environment.enableDevlogCreate;
   }
 
 }
