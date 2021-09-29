@@ -9,7 +9,8 @@ import { Devblog } from '../../models/Devblog';
 })
 export class DevblogCreatorComponent implements OnInit {
 
-  devBlog : {id: any, title: string, body: string, date: string} = {id: null, title: "", body: "", date: ""};
+  //TODO Handle Variation and Generation of GUID.
+  devBlog = new Devblog("", "", "dangard");
 
   constructor(public dataService: DevblogService) { }
 
@@ -21,9 +22,7 @@ export class DevblogCreatorComponent implements OnInit {
   onSubmit() { this.submitted = true; }
   
   createDevblog() {
-    console.log("Button Clicked");
-    console.log(this.devBlog);
-    // this.dataService.createDevBlog(this.devBlog);
-    this.devBlog = {id: null, title: "", body: "", date: ""};
+    this.dataService.createDevBlog(this.devBlog.convertToJson());
+    this.devBlog = new Devblog("", "", "dangard");
   }
 }

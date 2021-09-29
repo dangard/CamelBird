@@ -15,10 +15,12 @@ import { environment } from '../../../../environments/environment';
 export class DevblogService {
   apiServerUrl: string = "";
   getDevLogsUrl: string = "";
-  devblogs: any = [];
+  devBlogs: any = [];
   REST_API_SERVER: string = environment.apiServerUrl;
   // 2021-09-25 12:38:48
   now = moment("").format("YYYY-MM-DD HH:MM:SS");
+  errorMessage: string = "Ooops";
+  postId: any;
 
 
   constructor(private http: HttpClient, private constants: AppConstants) {
@@ -26,11 +28,21 @@ export class DevblogService {
     this.getDevLogsUrl = this.constants.OPERATIONS.DEVLOG.GET_ALL;
   }
 
-  public getDevBlogs(){
+  public getDevBlogs() {
     return this.http.get(this.REST_API_SERVER + this.constants.OPERATIONS.DEVLOG.GET_ALL);
   }
   
-  public createDevBlog(devBlog: { id:any, title:string, body:string, date:string }) {
-    this.devblogs.push(devBlog);
+  public createDevBlog(devBlog: { title:string, body:string, user:string }) {
+    console.log(devBlog);
+    this.http.post<any>(this.REST_API_SERVER + this.constants.OPERATIONS.DEVLOG.CREATE, devBlog).subscribe({
+        next: data => {
+            this.postId = data.log_id;
+            //TODO RefreshView
+        },
+        error: error => {
+            this.errorMessage = error.message;
+            console.error('There was an error!', error);
+        }
+    })
   }
 }
