@@ -1,26 +1,14 @@
-<div>
-  <form>
-    <div class="form-group">
-      <label for="id">ID</label>
-      <input [(ngModel)]="devBlog.id" type="text" name="id" class="form-control" id="id" aria-describedby="idHelp" placeholder="Enter ID">
-      <small id="idHelp" class="form-text text-muted">Enter your contact’s ID</small>
-    </div>
-    <div class="form-group">
-      <label for="name">Title</label>
-      <input [(ngModel)]="devBlog.title" type="text" name="title" class="form-control" id="title" aria-describedby="titleHelp" placeholder="Enter the title">
-      <small id="titleHelp" class="form-text text-muted">Enter your post's title</small>
-    </div>
-    <div class="form-group">
-      <label for="description">Body</label>
-      <textarea [(ngModel)]="devBlog.body" name="body" class="form-control" id="body" aria-describedby="bodyHelp">
-                      </textarea>
-      <small id="bodyHelp" class="form-text text-muted">Enter the Dev Blog body</small>
-    </div>
-    <div class="form-group">
-      <label for="email">Date</label>
-      <input [(ngModel)]="devBlog.date" type="text" name="date" class="form-control" id="date" aria-describedby="dateHelp" placeholder="Enter the date.">
-      <small id="dateHelp" class="form-text text-muted">Enter the date</small>
-    </div>
-  </form>
-  <button class="btn btn-primary" (click)="createDevblog()">Create Dev Blog</button>
-</div>
+<form class="create-devblog-form">
+  <div class="mb-3">
+    <label for="name">Title</label>
+    <input [(ngModel)]="devBlog.title" type="text" name="title" class="form-control" id="title" aria-describedby="titleHelp" placeholder="Enter the title">
+    <div id="titleHelp" class="form-text text-muted">Enter your post's title</div>
+  </div>
+  <div class="mb-3">
+    <label for="description">Body</label>
+    <textarea [(ngModel)]="devBlog.body" name="body" class="form-control" id="body" aria-describedby="bodyHelp">
+    </textarea>
+    <div id="bodyHelp" class="form-text text-muted">Enter the Dev Blog body</div>
+  </div>
+  <button type="submit" class="btn btn-primary" (click)="createDevblog()">Create Dev Blog</button>
+</form>
