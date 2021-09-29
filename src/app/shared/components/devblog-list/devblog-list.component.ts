@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DevblogService } from '../../services/devblog/devblog.service';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-devblog-list',
@@ -16,6 +17,10 @@ export class DevblogListComponent implements OnInit {
     this.dataService.getDevBlogs().subscribe(resp =>{
       this.devBlogs = resp;
     })  
+  }
+
+  public formatDate(date: string) {
+    return moment(date).format('ddd, MMM Do YYYY');
   }
 
   public selectDevBlog(devBlog: any) {
