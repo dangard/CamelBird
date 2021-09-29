@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http'
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
+import * as moment from 'moment';
 
 import { Observable, throwError } from 'rxjs';
 import { catchError, retry } from 'rxjs/operators';
@@ -16,6 +17,8 @@ export class DevblogService {
   getDevLogsUrl: string = "";
   devblogs: any = [];
   REST_API_SERVER: string = environment.apiServerUrl;
+  // 2021-09-25 12:38:48
+  now = moment("").format("YYYY-MM-DD HH:MM:SS");
 
 
   constructor(private http: HttpClient, private constants: AppConstants) {
