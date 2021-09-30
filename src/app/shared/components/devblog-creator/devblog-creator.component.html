@@ -1,14 +1,23 @@
-<form class="create-devblog-form" (ngSubmit)="onSubmit()">
-  <div class="mb-3">
-    <label for="name">Title</label>
-    <input [(ngModel)]="devBlog.title" type="text" name="title" class="form-control" id="title" aria-describedby="titleHelp" placeholder="Enter the title">
-    <div id="titleHelp" class="form-text text-muted">Enter your post's title</div>
+<div class="create-devblog-form container-fluid bg-white p-1">
+  <div class="row-fluid">
+    <div class="col-12 bg-info text-light text-center">
+      <strong>Create Dev Blog</strong>
+    </div>
   </div>
-  <div class="mb-3">
-    <label for="description">Body</label>
-    <textarea [(ngModel)]="devBlog.body" name="body" class="form-control" id="body" aria-describedby="bodyHelp">
+  <div class="row-fluid m-2">
+    <form (ngSubmit)="onSubmit()">
+      <div class="form-row">
+        <label for="name"><strong>Title</strong></label>
+        <input [(ngModel)]="devBlog.title" type="text" name="title" class="form-control" id="title" aria-describedby="titleHelp" placeholder="Enter the title">
+        <div id="titleHelp" class="form-text text-muted">Enter your post's title</div>
+      </div>
+      <div class="form-row">
+        <label for="description"><strong>Body</strong></label>
+        <textarea [(ngModel)]="devBlog.body" name="body" class="form-control" id="body" aria-describedby="bodyHelp">
     </textarea>
-    <div id="bodyHelp" class="form-text text-muted">Enter the Dev Blog body</div>
+        <div id="bodyHelp" class="form-text text-muted">Enter the Dev Blog body</div>
+      </div>
+      <button type="submit" class="btn btn-primary" (click)="createDevblog()">Create Dev Blog</button>
+    </form>
   </div>
-  <button type="submit" class="btn btn-primary" (click)="createDevblog()">Create Dev Blog</button>
-</form>
+</div>
