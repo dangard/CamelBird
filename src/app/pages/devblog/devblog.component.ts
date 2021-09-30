@@ -8,7 +8,7 @@ import { environment } from '../../../environments/environment';
   styleUrls: ['./devblog.component.scss']
 })
 export class DevblogComponent implements OnInit {
-  isCreateDevlogEnabled: boolean = false
+  isCreateDevlogEnabled: boolean = false;
 
   constructor(private constants: AppConstants) { }
 

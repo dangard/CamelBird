@@ -18,6 +18,7 @@ export class DevblogListComponent implements OnInit, OnDestroy {
   selectedDevBlog: any;
   event: any;
   errorMessage: any;
+  loading: boolean = true;
 
   constructor(private constants: AppConstants, public dataService: DevblogService, private eventListenerService: EventListenerService) {
     // subscribe to sender component messages
@@ -43,7 +44,9 @@ export class DevblogListComponent implements OnInit, OnDestroy {
   private getGetDevBlogs() {
     this.dataService.getDevBlogs().subscribe({
         next: resp => {
+            this.loading = true;
             this.devBlogs = resp;
+            this.loading = false;
         },
         error: error => {
             this.errorMessage = error.message;
