@@ -18,7 +18,6 @@ export class DevblogService {
   getDevLogsUrl: string = "";
   devBlogs: any = [];
   REST_API_SERVER: string = environment.apiServerUrl;
-  // 2021-09-25 12:38:48
   now = moment("").format("YYYY-MM-DD HH:MM:SS");
   errorMessage: string = "Ooops";
   postId: any;
@@ -38,7 +37,6 @@ export class DevblogService {
   }
   
   public createDevBlog(devBlog: { title:string, body:string, user:string }) {
-    console.log(devBlog);
     this.http.post<any>(this.REST_API_SERVER + this.constants.OPERATIONS.DEVBLOG.CREATE, devBlog).subscribe({
         next: data => {
             this.postId = data.log_id;
