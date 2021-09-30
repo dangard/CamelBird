@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy  } from '@angular/core';
+import { catchError, retry } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 import { DevblogService } from '../../services/devblog/devblog.service';
 import { EventListenerService } from '../../services/common/event-listener.service';
@@ -16,14 +17,21 @@ export class DevblogListComponent implements OnInit, OnDestroy {
   devBlogs: any;
   selectedDevBlog: any;
   event: any;
+  errorMessage: any;
 
   constructor(private constants: AppConstants, public dataService: DevblogService, private eventListenerService: EventListenerService) {
     // subscribe to sender component messages
-    this.eventListenerSubject = this.eventListenerService.getUpdate().subscribe
-      (message => { //message contains the data sent from service
+    this.eventListenerSubject = this.eventListenerService.getUpdate().subscribe({
+      //message contains the data sent from service
+      next: message => {
       this.event = message;
-      if (this.event.text === this.constants.EVENTS.DEVBLOG.CREATE) {
-        this.getGetDevBlogs();
+        if (this.event.text === this.constants.EVENTS.DEVBLOG.CREATE) {
+          this.getGetDevBlogs();
+        }
+      },
+      error: error => {
+          this.errorMessage = error.message;
+          console.error('There was an error!', error);
       }
     });
   }
@@ -33,8 +41,14 @@ export class DevblogListComponent implements OnInit, OnDestroy {
   }
 
   private getGetDevBlogs() {
-    this.dataService.getDevBlogs().subscribe(resp =>{
-      this.devBlogs = resp;
+    this.dataService.getDevBlogs().subscribe({
+        next: resp => {
+            this.devBlogs = resp;
+        },
+        error: error => {
+            this.errorMessage = error.message;
+            console.error('There was an error!', error);
+        }
     });
   }
 

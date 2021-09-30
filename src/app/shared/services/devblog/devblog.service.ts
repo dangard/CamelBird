@@ -44,7 +44,6 @@ export class DevblogService {
             this.postId = data.log_id;
             this.eventText = this.constants.EVENTS.DEVBLOG.CREATE;
             this.sendMessage();
-            //TODO RefreshView
         },
         error: error => {
             this.errorMessage = error.message;
