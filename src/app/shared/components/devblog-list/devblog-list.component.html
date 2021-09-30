@@ -5,16 +5,22 @@
 </div>
 
 <div *ngIf="!loading">
-  <div class="card text-center" *ngFor="let devBlog of devBlogs">
-    <div class="card-header">
-      {{devBlog.id}} {{devBlog.title}} 
+  <div class="card" *ngFor="let devBlog of devBlogs">
+    <div class="card-header bg-info text-light">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-6 gx-0">
+            <strong>{{devBlog.title}}</strong> 
+          </div>
+          <div class="col-6 text-align-right">
+            <strong>{{ formatDate(devBlog.date) }}</strong>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="card-block">
+    <div class="card-body">
       <p class="card-text">
         {{devBlog.body}}
-      </p>
-      <p>
-        {{ formatDate(devBlog.date) }}
       </p>
     </div>
   </div>
