@@ -5,19 +5,33 @@
     </div>
   </div>
   <div class="row-fluid m-2">
-    <form (ngSubmit)="onSubmit()">
+    <form [formGroup]="devblogForm" #formDir="ngForm">
       <div class="form-row">
         <label for="name"><strong>Title</strong></label>
-        <input [(ngModel)]="devBlog.title" type="text" name="title" class="form-control" id="title" aria-describedby="titleHelp" placeholder="Enter the title">
+        <input type="text" name="title" class="form-control" id="title" aria-describedby="titleHelp" placeholder="Enter the title" formControlName="title" required>
         <div id="titleHelp" class="form-text text-muted">Enter your post's title</div>
+        <div *ngIf="title.invalid && (title.dirty || title.touched)" class="alert alert-danger">
+          <div *ngIf="title.errors?.required">
+            Title is required.
+          </div>
+        </div>
       </div>
       <div class="form-row">
         <label for="description"><strong>Body</strong></label>
-        <textarea [(ngModel)]="devBlog.body" name="body" class="form-control" id="body" aria-describedby="bodyHelp">
+        <textarea name="body" class="form-control" id="body" aria-describedby="bodyHelp" formControlName="body" required>
     </textarea>
         <div id="bodyHelp" class="form-text text-muted">Enter the Dev Blog body</div>
+        <div *ngIf="body.invalid && (body.dirty || body.touched)" class="alert alert-danger">
+          <div *ngIf="body.errors?.required">
+            Body is required.
+          </div>
+        </div>
       </div>
-      <button type="submit" class="btn btn-primary" (click)="createDevblog()">Create Dev Blog</button>
+      <button type="submit" class="btn btn-primary" (click)="createDevblog()" [disabled]="devblogForm.invalid">Submit</button>
+      <button type="button" class="btn btn-info" (click)="formDir.resetForm({})">Reset</button>
     </form>
+  </div>
+  <div class="submitted-message" *ngIf="formDir.submitted">
+    <p>You've submitted your devblog, {{ devblogForm.value.title }}!</p>
   </div>
 </div>

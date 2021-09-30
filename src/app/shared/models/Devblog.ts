@@ -9,7 +9,6 @@ export class Devblog {
 
   convertToJson () {
     return {
-      // id: this.id,
       title: this.title,
       body: this.body,
       user: this.user
