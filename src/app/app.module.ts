@@ -11,9 +11,10 @@ import { HeaderComponent } from './shared/components/header/header.component';
 import { FooterComponent } from './shared/components/footer/footer.component';
 import { DevblogListComponent } from './shared/components/devblog-list/devblog-list.component';
 import { DevblogCreatorComponent } from './shared/components/devblog-creator/devblog-creator.component';
+import { FaceOffCritiqueComponent } from './shared/components/face-off-critique/face-off-critique.component';
 
 @NgModule({
-    declarations: [AppComponent, DevblogComponent, AccomplishmentsComponent, InterestsComponent, HeaderComponent, FooterComponent, DevblogListComponent, DevblogCreatorComponent],
+    declarations: [AppComponent, DevblogComponent, AccomplishmentsComponent, InterestsComponent, HeaderComponent, FooterComponent, DevblogListComponent, DevblogCreatorComponent, FaceOffCritiqueComponent],
     imports: [BrowserModule, HttpClientModule, AppRoutingModule, FormsModule, ReactiveFormsModule],
     providers: [],
     bootstrap: [AppComponent],
