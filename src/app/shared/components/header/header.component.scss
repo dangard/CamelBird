@@ -23,6 +23,12 @@ nav.navbar {
     opacity: 0.8;
   }
 
+  .camelbird-navbar-right {
+    position: absolute;
+    right: 10px;
+    top: 15px;
+  }
+
   ul {
     li {
       a.nav-link {
