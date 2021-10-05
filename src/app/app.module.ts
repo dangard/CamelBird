@@ -12,9 +12,10 @@ import { FooterComponent } from './shared/components/footer/footer.component';
 import { DevblogListComponent } from './shared/components/devblog-list/devblog-list.component';
 import { DevblogCreatorComponent } from './shared/components/devblog-creator/devblog-creator.component';
 import { FaceOffCritiqueComponent } from './shared/components/face-off-critique/face-off-critique.component';
+import { CamelbirdComponent } from './pages/camelbird/camelbird.component';
 
 @NgModule({
-    declarations: [AppComponent, DevblogComponent, AccomplishmentsComponent, InterestsComponent, HeaderComponent, FooterComponent, DevblogListComponent, DevblogCreatorComponent, FaceOffCritiqueComponent],
+    declarations: [AppComponent, DevblogComponent, AccomplishmentsComponent, InterestsComponent, HeaderComponent, FooterComponent, DevblogListComponent, DevblogCreatorComponent, FaceOffCritiqueComponent, CamelbirdComponent],
     imports: [BrowserModule, HttpClientModule, AppRoutingModule, FormsModule, ReactiveFormsModule],
     providers: [],
     bootstrap: [AppComponent],
