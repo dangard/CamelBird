@@ -43,8 +43,8 @@ export class FaceOffCritiqueComponent implements OnInit {
 
   /**
   * Utility to format an arry using conjunctions.
-  * @param {number} critiques - An array of strings
-  * @return {string} a formatted string. "a, a and c"
+  * @param {string array} critiques - An array of strings
+  * @return {string} a formatted string. "a, b and c"
   */
   private formatCritique(critiques: String[]) {
     return critiques.slice(0, -1).join(', ') + ' and ' + critiques.slice(-1);
