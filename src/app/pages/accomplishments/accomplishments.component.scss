@@ -5,9 +5,11 @@
 }
 
 .accomplishments-hero {
+    display: block;
     background-color: colors.$dark;
-    background-image: url("../../../assets/AdobeStock_208230550.jpg");
-    background-position: 10% 25%;
+    background-image: url("../../../assets/coderainbow.jpeg");
+    background-repeat: no-repeat;
+    background-position: center;
     background-size: cover;
     color: #fff;
     margin: 0 0 1.5rem;

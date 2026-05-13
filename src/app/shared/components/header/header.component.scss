@@ -1,6 +1,11 @@
 @use "../../../../assets/styles/colors.scss" as colors;
 
 nav.navbar {
+  /* Global `a:hover` sets bold — keep navbar typography steady */
+  a:hover {
+    font-weight: normal;
+  }
+
   &.bg-primary {
     /* matches palette-structure (#8b7765) */
     --bs-primary-rgb: 139, 119, 101;
@@ -70,15 +75,12 @@ nav.navbar {
       .navbar-social-icon {
         display: inline-block;
         color: rgba(255, 255, 255, 0.95);
-        transition:
-          color 0.15s ease,
-          transform 0.15s ease;
+        transition: color 0.15s ease;
       }
 
       &:hover .navbar-social-icon,
       &:focus-visible .navbar-social-icon {
         color: colors.$heading-color-secondary;
-        transform: scale(1.08);
       }
 
       &:focus-visible {
