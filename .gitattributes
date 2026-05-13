@@ -1,0 +1,29 @@
+* text=auto eol=lf
+
+# Source - force LF in working tree and in index
+*.ts        text eol=lf
+*.js        text eol=lf
+*.json      text eol=lf
+*.html      text eol=lf
+*.scss      text eol=lf
+*.css       text eol=lf
+*.md        text eol=lf
+*.yml       text eol=lf
+*.yaml      text eol=lf
+*.svg       text eol=lf
+.htaccess   text eol=lf
+
+# Windows-only scripts keep CRLF (future-proofing)
+*.bat       text eol=crlf
+*.cmd       text eol=crlf
+*.ps1       text eol=crlf
+
+# Binary - never normalize
+*.png       binary
+*.jpg       binary
+*.jpeg      binary
+*.gif       binary
+*.ico       binary
+*.webp      binary
+*.woff      binary
+*.woff2     binary

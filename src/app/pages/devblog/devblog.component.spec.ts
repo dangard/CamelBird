@@ -1,25 +1,26 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideHttpClient } from "@angular/common/http";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { DevblogComponent } from './devblog.component';
+import { DevblogComponent } from "./devblog.component";
 
-describe('DevblogComponent', () => {
-  let component: DevblogComponent;
-  let fixture: ComponentFixture<DevblogComponent>;
+describe("DevblogComponent", () => {
+    let component: DevblogComponent;
+    let fixture: ComponentFixture<DevblogComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ DevblogComponent ]
-    })
-    .compileComponents();
-  });
+    beforeEach(async () => {
+        await TestBed.configureTestingModule({
+            imports: [DevblogComponent],
+            providers: [provideHttpClient()],
+        }).compileComponents();
+    });
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(DevblogComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(DevblogComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it("should create", () => {
+        expect(component).toBeTruthy();
+    });
 });

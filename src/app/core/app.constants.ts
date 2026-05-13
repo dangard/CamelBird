@@ -1,20 +1,20 @@
-import { Injectable } from '@angular/core';
+import { Injectable } from "@angular/core";
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: "root",
 })
 export class AppConstants {
     public OPERATIONS = {
-      DEVBLOG: {
-        GET_ALL: '/devlogs',
-        GET: '/devlog',
-        CREATE: '/devlog'
-      }
+        DEVBLOG: {
+            GET_ALL: "/devlogs",
+            GET: "/devlog",
+            CREATE: "/devlog",
+        },
     };
     public EVENTS = {
-      DEVBLOG: {
-        READ: 'DEVLOG_READ',
-        CREATE:'DEVLOG_CREATED'
-      }
-    }
+        DEVBLOG: {
+            READ: "DEVLOG_READ",
+            CREATE: "DEVLOG_CREATED",
+        },
+    };
 }

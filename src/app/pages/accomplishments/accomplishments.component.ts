@@ -1,15 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from "@angular/core";
 
 @Component({
-  selector: 'app-accomplishments',
-  templateUrl: './accomplishments.component.html',
-  styleUrls: ['./accomplishments.component.scss']
+    selector: "app-accomplishments",
+    standalone: true,
+    templateUrl: "./accomplishments.component.html",
+    styleUrls: ["./accomplishments.component.scss"],
 })
-export class AccomplishmentsComponent implements OnInit {
-
-  constructor() { }
-
-  ngOnInit(): void {
-  }
-
-}
+export class AccomplishmentsComponent {}
