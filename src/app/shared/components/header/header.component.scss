@@ -8,25 +8,18 @@ nav.navbar {
     }
   }
 
-  #linked-in-logo {
-    height: 32px;
-    margin: 0 8px;
-  }
-
-  #github-logo {
-    height: 32px;
-    margin: 0 8px;
-  }
-
-  #linked-in-logo:hover,
-  #github-logo:hover {
-    opacity: 0.8;
-  }
-
   .camelbird-navbar-right {
     position: absolute;
     right: 10px;
     top: 15px;
+
+    i-bs {
+      margin: 0 8px;
+
+      &:hover {
+        color:  $heading-color-secondary;
+      }
+    }
   }
 
   ul {
@@ -34,7 +27,7 @@ nav.navbar {
       a.nav-link {
         color: #fff;
         padding-left: 10px;
-        padding-right: 10px; 
+        padding-right: 10px;
 
         &:hover {
           background-color: $heading-color-secondary;
