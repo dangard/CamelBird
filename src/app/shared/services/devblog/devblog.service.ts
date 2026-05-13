@@ -20,7 +20,6 @@ export class DevblogService {
     REST_API_SERVER: string = environment.apiServerUrl;
     errorMessage = "Ooops";
     postId: string | undefined;
-    eventText = "";
 
     constructor(
         private http: HttpClient,
@@ -32,12 +31,9 @@ export class DevblogService {
     }
 
     public getDevBlogs(): Observable<DevBlogListPayload[]> {
-        const res = this.http.get<DevBlogListPayload[]>(
+        return this.http.get<DevBlogListPayload[]>(
             this.REST_API_SERVER + this.constants.OPERATIONS.DEVBLOG.GET_ALL,
         );
-        this.eventText = this.constants.EVENTS.DEVBLOG.READ;
-        this.sendMessage();
-        return res;
     }
 
     public createDevBlog(devBlog: {
@@ -53,17 +49,15 @@ export class DevblogService {
             .subscribe({
                 next: (data) => {
                     this.postId = data.log_id;
-                    this.eventText = this.constants.EVENTS.DEVBLOG.CREATE;
-                    this.sendMessage();
+                    this.eventListenerService.emit({
+                        domain: "devblog",
+                        type: "created",
+                    });
                 },
                 error: (error) => {
                     this.errorMessage = error.message;
                     console.error("There was an error!", error);
                 },
             });
-    }
-
-    sendMessage(): void {
-        this.eventListenerService.sendUpdate(this.eventText);
     }
 }

@@ -11,10 +11,4 @@ export class AppConstants {
             CREATE: "/devlog",
         },
     };
-    public EVENTS = {
-        DEVBLOG: {
-            READ: "DEVLOG_READ",
-            CREATE: "DEVLOG_CREATED",
-        },
-    };
 }

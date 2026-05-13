@@ -119,7 +119,7 @@ sequenceDiagram
   SPA->>S: createDevBlog({title, body, user})
   S->>API: POST /devlog
   API-->>S: { log_id }
-  S->>E: sendUpdate("DEVLOG_CREATED")
+  S->>E: emit(devblog created)
   E-->>L: event observed
   L->>S: getDevBlogs() (refresh)
 ```
@@ -144,7 +144,7 @@ sequenceDiagram
 
 ### Dev blog feature
 
-- **`DevblogListComponent`** — lists posts, subscribes to `EventListenerService` to refresh on `DEVLOG_CREATED`, formats dates via **date-fns**, owns local `loading` and `errorMessage` state (`takeUntilDestroyed` for subscriptions).
+- **`DevblogListComponent`** — lists posts, subscribes to `EventListenerService.events$` (filtered devblog `created` events) to refresh after a successful create, formats dates via **date-fns**, owns local `loading` and `errorMessage` state (`takeUntilDestroyed` for subscriptions).
 - **`DevblogCreatorComponent`** — `ReactiveForms` form (`title`, `body` required); hard-codes `user = "dangard"`; POSTs via `DevblogService`.
 - **`DevblogService`** (`providedIn: 'root'`) — single HTTP gateway for the feature.
   - **Signatures**: typed payloads via `src/app/shared/models/devblog-api.types.ts` — e.g. `getDevBlogs(): Observable<DevBlogListPayload[]>`, `createDevBlog` → `post<CreateDevBlogResponse>`.
@@ -152,7 +152,7 @@ sequenceDiagram
   - **API contract observed**:
     - `GET {apiServerUrl}/devlogs` → list
     - `POST {apiServerUrl}/devlog` → `{ log_id }`
-- **`EventListenerService`** — in-app pub/sub via RxJS `Subject<any>` (`sendUpdate`, `getUpdate`). One topic, untyped payload (`{ text: string }`).
+- **`EventListenerService`** — typed in-app events: `Subject<CamelBirdAppEvent>` exposed as `events$`, `emit(...)`. Payloads are a discriminated union (`src/app/shared/models/app-events.types.ts`); extend the union as new domains appear.
 - **`AppConstants`** — central place for API paths and event names; injectable; no values from env.
 
 ### Other shared components
@@ -215,7 +215,7 @@ Listed roughly by impact for an architecture review.
 | 4 | **Feature flag treated as a control** | `environment.enableDevlogCreate` only hides the creator UI; service still exposes `createDevBlog` | Enforce authorization on `api.camelbird.com`. Keep flag as UX-only; document it is **not** a security boundary. | Server-side effort. |
 | 5 | ~~**jQuery + Bootstrap JS**~~ | *Removed* from `angular.json` scripts | N/A unless new global scripts are added. | — |
 | 6 | ~~**Monolithic NgModule**~~ | *Addressed*: standalone components + `app.routes.ts` | Optional: lazy routes per feature if bundle grows. | Slight routing churn. |
-| 7 | **`EventListenerService` is a string-based bus** | `Subject<any>` with `{ text: message }` payload and string constants in `AppConstants.EVENTS` | Replace with a typed discriminated union or a dedicated refresh observable. | Slightly more coupling if collapsed into one service. |
+| 7 | ~~**`EventListenerService` is a string-based bus**~~ | *Addressed*: `CamelBirdAppEvent` discriminated union (`app-events.types.ts`), `emit` / `events$`; removed `AppConstants.EVENTS` | Add variants to the union when new cross-cutting notifications are needed. | Union grows with features. |
 | 8 | **No observability** | No logger abstraction, no client-side error reporting, no analytics | Add `LoggerService` + optional `HttpInterceptor` for centralized errors / reporting later. | New deps if wired to a vendor. |
 | 9 | **Error surfacing is thin** | `console.error`; limited user-visible errors | Toasts or inline errors on list/create failure. | Small UI work. |
 | 10 | **Apache config split** | `src/.htaccess` rewrites/HTTPS only; security headers may live in vhost | Document canonical Apache config; add CSP/HSTS if policy allows. | Host must permit overrides. |
