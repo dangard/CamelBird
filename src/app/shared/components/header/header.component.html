@@ -12,25 +12,28 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <a
-            class="navbar-brand me-auto"
+            class="navbar-brand me-auto text-white"
             href="#"
             routerLink="/camelbird"
             routerLinkActive="active"
         >
             <img
-                class="d.d-inline-block align-text-top"
+                class="d-inline-block align-text-top"
                 id="camel-logo"
-                alt="CamelBird Logo"
-                src="/assets/zflyingcamel.gif"
+                src="assets/zflyingcamel.gif"
                 width="40"
+                height="40"
+                alt=""
             />
             {{ title }}.com
         </a>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+            <ul
+                class="navbar-nav nav-pills mx-auto mb-2 mb-lg-0 gap-1 align-items-lg-center"
+            >
                 <li class="nav-item">
                     <a
-                        class="nav-link"
+                        class="nav-link rounded-pill px-3"
                         routerLink="/accomplishments"
                         routerLinkActive="active"
                         >Accomplishments</a
@@ -38,7 +41,7 @@
                 </li>
                 <li class="nav-item">
                     <a
-                        class="nav-link"
+                        class="nav-link rounded-pill px-3"
                         routerLink="/devblog"
                         routerLinkActive="active"
                         *ngIf="isDevBlogEnabled"
@@ -47,7 +50,7 @@
                 </li>
                 <li class="nav-item">
                     <a
-                        class="nav-link"
+                        class="nav-link rounded-pill px-3"
                         routerLink="/interests"
                         routerLinkActive="active"
                         >Interests</a
@@ -63,12 +66,10 @@
                 href="https://github.com/dangard"
                 title="Github"
             >
-                <img
-                    id="github-logo"
-                    alt="Github Logo"
-                    src="/assets/GitHub-Mark-Light-32px.png"
-                    height="24"
-                />
+                <i
+                    class="bi bi-github navbar-social-icon"
+                    aria-hidden="true"
+                ></i>
             </a>
             <a
                 aria-label="Daniel on Linked In"
@@ -77,22 +78,11 @@
                 href="https://www.linkedin.com/in/dangard/"
                 title="Linked In"
             >
-                <img
-                    id="linked-in-logo"
-                    alt="Linked In Logo"
-                    src="/assets/LI-In-Bug.png"
-                    height="24"
-                />
+                <i
+                    class="bi bi-linkedin navbar-social-icon"
+                    aria-hidden="true"
+                ></i>
             </a>
         </div>
     </div>
-    <div class="camelbird-navbar-right">
-      <a aria-label="Github link" target="_blank" rel="noopener" href="https://github.com/dangard" title="Github">
-        <i-bs name="github" role="img" aria-label="Github" height="1.7rem" width="1.7rem"></i-bs>
-      </a>
-      <a aria-label="Daniel on Linked In" target="_blank" rel="noopener" href="https://www.linkedin.com/in/dangard/" title="LinkedIn">
-        <i-bs name="linkedin" role="img" aria-label="LinkedIn" height="1.7rem" width="1.7rem"></i-bs>
-      </a>
-    </div>
-  </div>
 </nav>

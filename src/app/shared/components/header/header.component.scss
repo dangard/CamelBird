@@ -1,10 +1,58 @@
-@import "../../../../assets/styles/colors.scss";
+@use "../../../../assets/styles/colors.scss" as colors;
 
 nav.navbar {
+  &.bg-primary {
+    /* Prebuilt Bootstrap CSS uses default blue — restore brand green from palette. */
+    --bs-primary-rgb: 30, 87, 0;
+  }
+
   .navbar-brand {
+    color: #fff;
+    text-decoration: none;
+
+    &:hover,
+    &:visited,
+    &:focus-visible {
+      color: #fff;
+    }
+
     #camel-logo {
-      border-radius: 20px;
       width: 40px;
+      height: auto;
+      max-height: 40px;
+      border-radius: 20px;
+      margin-right: 0.35rem;
+      vertical-align: text-top;
+    }
+  }
+
+  .navbar-nav.nav-pills {
+    .nav-link {
+      color: #fff;
+      transition:
+        background-color 0.15s ease,
+        color 0.15s ease;
+
+      &:hover:not(.active),
+      &:focus:not(.active) {
+        background-color: rgba(255, 255, 255, 0.14);
+        color: #fff;
+      }
+
+      &:focus-visible {
+        outline: 2px solid rgba(255, 255, 255, 0.45);
+        outline-offset: 2px;
+      }
+
+      &.active {
+        background-color: colors.$heading-color-secondary;
+        color: #fff;
+      }
+
+      &.active:hover {
+        background-color: colors.$heading-color-secondary;
+        color: #fff;
+      }
     }
   }
 
@@ -13,40 +61,37 @@ nav.navbar {
     right: 10px;
     top: 15px;
 
-    i-bs {
+    a {
+      display: inline-block;
       margin: 0 8px;
+      color: inherit;
+      text-decoration: none;
 
-      &:hover {
-        color:  $heading-color-secondary;
+      .navbar-social-icon {
+        display: inline-block;
+        color: rgba(255, 255, 255, 0.95);
+        transition:
+          color 0.15s ease,
+          transform 0.15s ease;
+      }
+
+      &:hover .navbar-social-icon,
+      &:focus-visible .navbar-social-icon {
+        color: colors.$heading-color-secondary;
+        transform: scale(1.08);
+      }
+
+      &:focus-visible {
+        outline: 2px solid colors.$heading-color-secondary;
+        outline-offset: 3px;
+        border-radius: 2px;
       }
     }
-  }
 
-  ul {
-    li {
-      a.nav-link {
-        color: #fff;
-        padding-left: 10px;
-        padding-right: 10px;
-
-        &:hover {
-          background-color: $heading-color-secondary;
-          color: #fff;
-        }
-
-        &:active {
-          color: #fff;
-        }
-
-        &:visited {
-          color: #fff;
-        }
-
-        &.active {
-          background-color: $heading-color-secondary;
-          color: #fff;
-        }
-      }
+    .navbar-social-icon {
+      font-size: 1.5rem;
+      line-height: 1;
+      vertical-align: middle;
     }
   }
 }
