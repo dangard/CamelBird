@@ -1,69 +1,92 @@
-import { Component, OnInit, OnDestroy  } from '@angular/core';
-import { catchError, retry } from 'rxjs/operators';
-import { Subscription } from 'rxjs';
-import { DevblogService } from '../../services/devblog/devblog.service';
-import { EventListenerService } from '../../services/common/event-listener.service';
-import { AppConstants } from '../../../core/app.constants';
+import { HttpErrorResponse } from "@angular/common/http";
+import { DestroyRef, inject, Component, OnInit } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { filter } from "rxjs";
 
-import * as moment from 'moment';
+import { LoggerService } from "../../../core/logger.service";
+import { DevblogService } from "../../services/devblog/devblog.service";
+import { EventListenerService } from "../../services/common/event-listener.service";
+
+import { format, isValid, parseISO } from "date-fns";
+import { NgIf, NgFor } from "@angular/common";
 
 @Component({
-  selector: 'app-devblog-list',
-  templateUrl: './devblog-list.component.html',
-  styleUrls: ['./devblog-list.component.scss']
+    selector: "app-devblog-list",
+    standalone: true,
+    templateUrl: "./devblog-list.component.html",
+    styleUrls: ["./devblog-list.component.scss"],
+    imports: [NgIf, NgFor],
 })
-export class DevblogListComponent implements OnInit, OnDestroy {
-  private eventListenerSubject: any;
-  devBlogs: any;
-  selectedDevBlog: any;
-  event: any;
-  errorMessage: any;
-  loading: boolean = true;
+export class DevblogListComponent implements OnInit {
+    private readonly destroyRef = inject(DestroyRef);
+    private readonly logger = inject(LoggerService);
 
-  constructor(private constants: AppConstants, public dataService: DevblogService, private eventListenerService: EventListenerService) {
-    // subscribe to sender component messages
-    this.eventListenerSubject = this.eventListenerService.getUpdate().subscribe({
-      //message contains the data sent from service
-      next: message => {
-      this.event = message;
-        if (this.event.text === this.constants.EVENTS.DEVBLOG.CREATE) {
-          this.getGetDevBlogs();
+    devBlogs: any;
+    selectedDevBlog: any;
+    errorMessage: string | null = null;
+    loading = true;
+
+    constructor(
+        public dataService: DevblogService,
+        private eventListenerService: EventListenerService,
+    ) {
+        this.eventListenerService.events$
+            .pipe(
+                filter((e) => e.domain === "devblog" && e.type === "created"),
+                takeUntilDestroyed(this.destroyRef),
+            )
+            .subscribe({
+                next: () => this.getGetDevBlogs(),
+                error: (error: unknown) => {
+                    const message =
+                        error instanceof Error ? error.message : String(error);
+                    this.errorMessage = message;
+                    this.logger.error("Dev blog event stream error", {
+                        message,
+                    });
+                },
+            });
+    }
+
+    ngOnInit() {
+        this.getGetDevBlogs();
+    }
+
+    private getGetDevBlogs() {
+        this.loading = true;
+        this.errorMessage = null;
+        this.dataService.getDevBlogs().subscribe({
+            next: (resp) => {
+                this.devBlogs = resp;
+                this.loading = false;
+            },
+            error: (error: unknown) => {
+                const message =
+                    error instanceof HttpErrorResponse
+                        ? error.message ||
+                          `Could not load dev blogs (${error.status}). Try again later.`
+                        : error instanceof Error
+                          ? error.message
+                          : "Could not load dev blogs. Try again later.";
+                this.errorMessage = message;
+                this.loading = false;
+                this.logger.error("Dev blog list load failed", {
+                    message,
+                });
+            },
+        });
+    }
+
+    public formatDate(date: string) {
+        let d = parseISO(date);
+        if (!isValid(d)) {
+            const fallback = new Date(date);
+            d = fallback;
         }
-      },
-      error: error => {
-          this.errorMessage = error.message;
-          console.error('There was an error!', error);
-      }
-    });
-  }
+        return isValid(d) ? format(d, "EEE, MMM do yyyy") : date;
+    }
 
-  ngOnInit() {
-    this.getGetDevBlogs();
-  }
-
-  private getGetDevBlogs() {
-    this.dataService.getDevBlogs().subscribe({
-        next: resp => {
-            this.loading = true;
-            this.devBlogs = resp;
-            this.loading = false;
-        },
-        error: error => {
-            this.errorMessage = error.message;
-            console.error('There was an error!', error);
-        }
-    });
-  }
-
-  public formatDate(date: string) {
-    return moment(date).format('ddd, MMM Do YYYY');
-  }
-
-  public selectDevBlog(devBlog: any) {
-    this.selectedDevBlog = devBlog;
-  }
-
-  ngOnDestroy() {
-    this.eventListenerSubject.unsubscribe();
-  }
+    public selectDevBlog(devBlog: any) {
+        this.selectedDevBlog = devBlog;
+    }
 }

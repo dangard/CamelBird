@@ -1,6 +1,6 @@
 export const environment = {
     production: true,
-    apiServerUrl: "https://api.camelbird.com",
+    apiServerUrl: "https://api.camelbird.local",
     enableDevlogCreate: false,
-    enableDevBlog: true
+    enableDevBlog: true,
 };

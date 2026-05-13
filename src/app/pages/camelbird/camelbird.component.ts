@@ -1,15 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from "@angular/core";
+import { RouterLink } from "@angular/router";
 
 @Component({
-  selector: 'app-camelbird',
-  templateUrl: './camelbird.component.html',
-  styleUrls: ['./camelbird.component.scss']
+    selector: "app-camelbird",
+    standalone: true,
+    imports: [RouterLink],
+    templateUrl: "./camelbird.component.html",
+    styleUrls: ["./camelbird.component.scss"],
 })
-export class CamelbirdComponent implements OnInit {
-
-  constructor() { }
-
-  ngOnInit(): void {
-  }
-
-}
+export class CamelbirdComponent {}

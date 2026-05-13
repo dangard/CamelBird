@@ -1,7 +1,10 @@
-.form-container {
-	border: 1px solid #F00;
+@use "../../../assets/styles/colors.scss" as colors;
+
+.devblog-hero {
+    background-color: colors.$dark;
+    margin: 0 0 1.5rem;
 }
 
 .devblog-container {
-	margin-bottom: 60px;
+    margin-bottom: 60px;
 }

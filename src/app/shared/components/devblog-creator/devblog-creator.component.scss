@@ -1,5 +1,17 @@
+@use "../../../../assets/styles/colors.scss" as colors;
+
 .create-devblog-form {
-	margin-top: 30px;
+  margin-top: 30px;
+  padding: 0.125rem !important;
+  background-color: colors.$surface-lifted !important;
+  border: 1px solid rgba(67, 58, 50, 0.12);
+  border-radius: 0.375rem;
+  overflow: hidden;
+}
+
+.devblog-form__banner {
+  background-color: colors.$palette-structure;
+  color: #fff;
 }
 
 .text-align-right {

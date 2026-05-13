@@ -1,30 +1,37 @@
-/* You can add global styles to this file, and also import other style files */
-@import "./assets/styles/colors.scss";
-@import "../node_modules/bootstrap/scss/bootstrap";
+/*
+ * Palette + global overrides use Sass module `@use` only (no `@import` in app SCSS).
+ * Bootstrap ships as compiled CSS (`angular.json`); upstream Sass deprecation warnings from Bootstrap internals do not affect this bundle path until/if SCSS is imported from node_modules.
+ */
+@use "./assets/styles/colors.scss" as colors;
+
+:root {
+  --bs-primary: #{colors.$primary};
+  --bs-primary-rgb: 139, 119, 101;
+}
 
 body {
-  background-color: $body-background-color;
+  background-color: colors.$body-background-color;
   padding-top: 65px;
 }
 
 a {
-  color: $link-color;
+  color: colors.$link-color;
 
   &:hover {
     font-weight: bold;
     text-decoration: none;
-    color: $link-hover-color;
+    color: colors.$link-hover-color;
   }
 
   &:visited {
-    color: $link-visited-color;
+    color: colors.$link-visited-color;
   }
 }
 
 h4 {
-  color: $heading-color-primary;
+  color: colors.$heading-color-primary;
 }
 
 h5 {
-  color: $heading-color-secondary;
+  color: colors.$heading-color-secondary;
 }
