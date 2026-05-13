@@ -3,3 +3,4 @@ angular.json
 package.json
 package-lock.json
 dist
+src/environments/environment.generated.ts

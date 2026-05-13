@@ -42,6 +42,14 @@ yarn-error.log
 testem.log
 /typings
 
+# Local env (see .env.example). Optional: .env.development / .env.production
+.env
+.env.*
+!.env.example
+
+# Generated from .env at build-time
+src/environments/environment.generated.ts
+
 # System Files
 .DS_Store
 Thumbs.db

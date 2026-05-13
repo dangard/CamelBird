@@ -14,7 +14,7 @@
 
 ## Executive summary
 
-CamelBird is a small **Angular 20 standalone single-page application** for a personal site (accomplishments, interests, dev blog, branding). The build emits a static bundle to **`dist/CamelBird`** (application builder; browser assets at the project output root) and is served by **Apache** using a `.htaccess` that forces HTTPS and routes unknown paths back to `index.html` for client-side routing. The only dynamic feature is a **dev blog** that calls an external REST API (`environment.apiServerUrl` → `https://api.camelbird.com` in production) for list and create operations; that backend is not in this repository. The codebase is small (≈10 components, 2 services, route config in `app.routes.ts`, 1 constants class) with **Jest** unit tests and **GitHub Actions CI** (`lint`, production `build`, `test`). Remaining architectural watch items include **the UI feature flag (`enableDevlogCreate`) treated as UX-only** (authorization belongs on `api.camelbird.com`). Client-side **logging + HTTP failure interception** and **inline dev-blog errors** are now in place; optional vendor analytics or CSP tightening remains host-dependent—see **`docs/APACHE_CONFIG.md`**.
+CamelBird is a small **Angular 20 standalone single-page application** for a personal site (accomplishments, interests, dev blog, branding). The build emits a static bundle to **`dist/CamelBird`** (application builder; browser assets at the project output root) and is served by **Apache** using a `.htaccess` that forces HTTPS and routes unknown paths back to `index.html` for client-side routing. The only dynamic feature is a **dev blog** that calls an external REST API; **`environment.apiServerUrl`** and feature flags ship from **`.env` → `environment.generated.ts`** at build/serve time (defaults match `https://api.camelbird.com` for production bundles when unset); that backend is not in this repository. The codebase is small (≈10 components, 2 services, route config in `app.routes.ts`, 1 constants class) with **Jest** unit tests and **GitHub Actions CI** (`lint`, production `build`, `test`). Remaining architectural watch items include **the UI feature flag (`enableDevlogCreate`) treated as UX-only** (authorization belongs on `api.camelbird.com`). Client-side **logging + HTTP failure interception** and **inline dev-blog errors** are now in place; optional vendor analytics or CSP tightening remains host-dependent—see **`docs/APACHE_CONFIG.md`**.
 
 ## Context
 
@@ -41,7 +41,7 @@ flowchart LR
 - **Build constraints (`angular.json`)**:
   - Production budgets: initial bundle warning **1mb** / error **1.25mb**; per-component-style warning 2kb / error 4kb.
   - **Strict mode enabled** at the Angular project level.
-  - Production swaps `environment.ts` → `environment.prod.ts` (`fileReplacements`).
+  - **Environment**: **`scripts/generate-environment.mjs`** writes **`src/environments/environment.generated.ts`** from **`.env`** / **`.env.*`** (**`NG_APP_*`** vars; see **`.env.example`**). **`environment.ts`** re-exports generated values; **`production`** is set from the generator mode (**development** vs **production**) — not stored in `.env`.
 - **Hosting constraint**: Apache with `.htaccess`; rewrites assume a single-page fallback to `index.html`.
 - **No explicit non-functional requirements** documented in repo.
 
@@ -73,7 +73,7 @@ flowchart TB
       evtsvc[EventListenerService]
       constants[AppConstants]
     end
-    env[environment.ts / environment.prod.ts]
+    env[environment.generated.ts via .env]
     bootstrap --> router
     router --> pages
     pages --> shared
@@ -198,13 +198,13 @@ sequenceDiagram
 
 ## Development workflow
 
-- **Run locally**: `npm start` → `ng serve` on `http://localhost:4200/`; dev env points API to `http://localhost`.
-- **Build**: `npm run build` → `ng build` (production by default per `defaultConfiguration: "production"`).
+- **Run locally**: `npm start` → regenerates **development** `environment.generated.ts` then `ng serve` on **`http://localhost:4200/`**. Copy **`.env.example`** → **`.env`** and set **`NG_APP_*`** (optional layered **`.env.development`** overrides **`.env`**).
+- **Build**: `npm run build` → generates **production** `environment.generated.ts` then **`ng build`** (`defaultConfiguration`: **production`).
 - **Watch**: `npm run watch` → `ng build --watch --configuration development`.
 - **Lint**: `npm run lint` → `tsc --noEmit && eslint . --ext js,ts,json,html --quiet --fix` (config: `.eslintrc.json` with `@angular-eslint/recommended`).
 - **Test**: `npm test` → **`jest --ci --runInBand`** (`jest.config.cjs`, `setup-jest.ts` with zone test env from `jest-preset-angular`).
 - **Tests present**: spec files for routed/shared components, **`DevblogService`**, **`EventListenerService`**, and **`LoggerService`** (`*.component.spec.ts`, `*.service.spec.ts`).
-- **CI**: `.github/workflows/ci.yml` — Node 20, `npm ci`, lint, production build, Jest (no browser install).
+- **CI**: `.github/workflows/ci.yml` — Node 20, `npm ci` (**`prepare`** writes **development** `environment.generated.ts` for lint/tests), lint, Jest, then **`npm run build`** (production env generation + **`ng build`**).
 - **IaC**: **None** (no Terraform, Pulumi, Bicep, CloudFormation, K8s manifests).
 - **Local-dev tooling**: ESLint + Prettier + TypeScript strict; `.editorconfig`, `.nvmrc` (Node 20), `.gitattributes` (line endings).
 

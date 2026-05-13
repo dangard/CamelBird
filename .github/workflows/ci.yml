@@ -39,8 +39,8 @@ jobs:
 
       - run: npm run lint
 
-      - name: Production build
-        run: npx ng build --configuration production
-
       - name: Unit tests (Jest)
         run: npm test
+
+      - name: Production build
+        run: npm run build
