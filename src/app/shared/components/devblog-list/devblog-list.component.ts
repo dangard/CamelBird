@@ -1,7 +1,9 @@
+import { HttpErrorResponse } from "@angular/common/http";
 import { DestroyRef, inject, Component, OnInit } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { filter } from "rxjs";
 
+import { LoggerService } from "../../../core/logger.service";
 import { DevblogService } from "../../services/devblog/devblog.service";
 import { EventListenerService } from "../../services/common/event-listener.service";
 
@@ -17,9 +19,11 @@ import { NgIf, NgFor } from "@angular/common";
 })
 export class DevblogListComponent implements OnInit {
     private readonly destroyRef = inject(DestroyRef);
+    private readonly logger = inject(LoggerService);
+
     devBlogs: any;
     selectedDevBlog: any;
-    errorMessage: any;
+    errorMessage: string | null = null;
     loading = true;
 
     constructor(
@@ -33,9 +37,13 @@ export class DevblogListComponent implements OnInit {
             )
             .subscribe({
                 next: () => this.getGetDevBlogs(),
-                error: (error) => {
-                    this.errorMessage = error.message;
-                    console.error("There was an error!", error);
+                error: (error: unknown) => {
+                    const message =
+                        error instanceof Error ? error.message : String(error);
+                    this.errorMessage = message;
+                    this.logger.error("Dev blog event stream error", {
+                        message,
+                    });
                 },
             });
     }
@@ -45,15 +53,26 @@ export class DevblogListComponent implements OnInit {
     }
 
     private getGetDevBlogs() {
+        this.loading = true;
+        this.errorMessage = null;
         this.dataService.getDevBlogs().subscribe({
             next: (resp) => {
-                this.loading = true;
                 this.devBlogs = resp;
                 this.loading = false;
             },
-            error: (error) => {
-                this.errorMessage = error.message;
-                console.error("There was an error!", error);
+            error: (error: unknown) => {
+                const message =
+                    error instanceof HttpErrorResponse
+                        ? error.message ||
+                          `Could not load dev blogs (${error.status}). Try again later.`
+                        : error instanceof Error
+                          ? error.message
+                          : "Could not load dev blogs. Try again later.";
+                this.errorMessage = message;
+                this.loading = false;
+                this.logger.error("Dev blog list load failed", {
+                    message,
+                });
             },
         });
     }

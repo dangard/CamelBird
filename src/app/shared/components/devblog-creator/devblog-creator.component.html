@@ -4,6 +4,9 @@
             <strong>Create Dev Blog</strong>
         </div>
     </div>
+    <div *ngIf="submitError" class="alert alert-danger m-2" role="alert">
+        {{ submitError }}
+    </div>
     <div class="row-fluid m-2" [hidden]="formDir.submitted">
         <form [formGroup]="devblogForm" #formDir="ngForm">
             <div class="form-row pb-3">

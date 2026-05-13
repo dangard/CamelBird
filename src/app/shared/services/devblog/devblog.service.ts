@@ -4,7 +4,7 @@ import { HttpClient } from "@angular/common/http";
 import { AppConstants } from "../../../core/app.constants";
 import { environment } from "../../../../environments/environment";
 import { EventListenerService } from "../common/event-listener.service";
-import { Observable } from "rxjs";
+import { Observable, tap } from "rxjs";
 import type {
     CreateDevBlogResponse,
     DevBlogListPayload,
@@ -18,7 +18,6 @@ export class DevblogService {
     getDevLogsUrl = "";
     devBlogs: DevBlogListPayload[] = [];
     REST_API_SERVER: string = environment.apiServerUrl;
-    errorMessage = "Ooops";
     postId: string | undefined;
 
     constructor(
@@ -40,24 +39,22 @@ export class DevblogService {
         title: string;
         body: string;
         user: string;
-    }) {
-        this.http
+    }): Observable<CreateDevBlogResponse> {
+        return this.http
             .post<CreateDevBlogResponse>(
                 this.REST_API_SERVER + this.constants.OPERATIONS.DEVBLOG.CREATE,
                 devBlog,
             )
-            .subscribe({
-                next: (data) => {
-                    this.postId = data.log_id;
-                    this.eventListenerService.emit({
-                        domain: "devblog",
-                        type: "created",
-                    });
-                },
-                error: (error) => {
-                    this.errorMessage = error.message;
-                    console.error("There was an error!", error);
-                },
-            });
+            .pipe(
+                tap({
+                    next: (data) => {
+                        this.postId = data.log_id;
+                        this.eventListenerService.emit({
+                            domain: "devblog",
+                            type: "created",
+                        });
+                    },
+                }),
+            );
     }
 }

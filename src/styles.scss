@@ -1,6 +1,6 @@
 /*
- * Palette + global overrides compile as Sass (@use).
- * Bootstrap 5 SCSS still uses deprecated @import in node_modules until v6; we load compiled CSS instead.
+ * Palette + global overrides use Sass module `@use` only (no `@import` in app SCSS).
+ * Bootstrap ships as compiled CSS (`angular.json`); upstream Sass deprecation warnings from Bootstrap internals do not affect this bundle path until/if SCSS is imported from node_modules.
  */
 @use "./assets/styles/colors.scss" as colors;
 
