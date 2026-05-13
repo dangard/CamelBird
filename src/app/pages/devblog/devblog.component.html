@@ -1,16 +1,25 @@
 <nav aria-label="breadcrumb">
-    <ol class="breadcrumb mt-2">
-        <li class="breadcrumb-item" aria-current="page">
-            <a href="#">Home</a>
-        </li>
-        <li class="breadcrumb-item active" aria-current="page">Dev Blog</li>
-    </ol>
-</nav>
-<div class="row devblog-container">
-    <div class="col-12">
-        <app-devblog-list></app-devblog-list>
+    <div class="container">
+        <ol class="breadcrumb mb-3 mt-2">
+            <li class="breadcrumb-item">
+                <a routerLink="/">Home</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">Dev Blog</li>
+        </ol>
     </div>
-    <div class="col-12 col-sm-8 offset-sm-2" *ngIf="isCreateDevlogEnabled">
-        <app-devblog-creator></app-devblog-creator>
+</nav>
+<div class="devblog-hero p-4 p-md-4 mb-4 rounded-3 text-light shadow-sm">
+    <div class="container">
+        <h1 class="display-5 fw-normal mb-0">Dev Blog</h1>
+    </div>
+</div>
+<div class="container pb-5">
+    <div class="row g-4 devblog-container">
+        <div class="col-12">
+            <app-devblog-list></app-devblog-list>
+        </div>
+        <div class="col-12 col-sm-8 offset-sm-2" *ngIf="isCreateDevlogEnabled">
+            <app-devblog-creator></app-devblog-creator>
+        </div>
     </div>
 </div>

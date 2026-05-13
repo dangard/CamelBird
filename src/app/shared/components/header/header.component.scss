@@ -2,8 +2,8 @@
 
 nav.navbar {
   &.bg-primary {
-    /* Prebuilt Bootstrap CSS uses default blue — restore brand green from palette. */
-    --bs-primary-rgb: 30, 87, 0;
+    /* matches palette-structure (#8b7765) */
+    --bs-primary-rgb: 139, 119, 101;
   }
 
   .navbar-brand {

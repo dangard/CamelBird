@@ -1,5 +1,11 @@
-.jumbotron {
-  background: transparent url("/assets/zflyingcamel.gif") no-repeat right center;
-  margin: 30px 0 20px 0;
-  height: 170px;
+@use "../../../assets/styles/colors.scss" as colors;
+
+.camelbird-hero {
+  background-color: colors.$dark;
+  background-image: url("../../../assets/zflyingcamel.gif");
+  background-repeat: no-repeat;
+  background-position: right center;
+  background-size: contain;
+  margin: 0 0 1.5rem;
+  min-height: 170px;
 }

@@ -1,11 +1,15 @@
- .dropCap {
-   font-family: Gotham, "Helvetica Neue", Helvetica, Arial, "sans-serif";
- }
+@use "../../../assets/styles/colors.scss" as colors;
 
- .jumbotron {
-   background-image: url("/assets/AdobeStock_208230550.jpg");
-   background-position: 10% 25%;
-   color: #FFF;
-   margin: 30px 0 20px 0;
-   height: 190px;
- }
+.dropCap {
+    font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.accomplishments-hero {
+    background-color: colors.$dark;
+    background-image: url("../../../assets/AdobeStock_208230550.jpg");
+    background-position: 10% 25%;
+    background-size: cover;
+    color: #fff;
+    margin: 0 0 1.5rem;
+    min-height: 190px;
+}

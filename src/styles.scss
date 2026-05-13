@@ -4,6 +4,11 @@
  */
 @use "./assets/styles/colors.scss" as colors;
 
+:root {
+  --bs-primary: #{colors.$primary};
+  --bs-primary-rgb: 139, 119, 101;
+}
+
 body {
   background-color: colors.$body-background-color;
   padding-top: 65px;
