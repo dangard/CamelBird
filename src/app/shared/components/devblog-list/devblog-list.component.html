@@ -9,20 +9,23 @@
 </div>
 
 <div *ngIf="!loading">
-    <div class="card" *ngFor="let devBlog of devBlogs">
-        <div class="card-header bg-info text-light">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-6 gx-0">
+    <div
+        class="card devblog-card shadow-sm mb-3"
+        *ngFor="let devBlog of devBlogs"
+    >
+        <div class="card-header devblog-card__header border-0">
+            <div class="container-fluid px-0">
+                <div class="row align-items-center g-2">
+                    <div class="col-12 col-sm-8">
                         <strong>{{ devBlog.title }}</strong>
                     </div>
-                    <div class="col-6 text-align-right">
+                    <div class="col-12 col-sm-4 text-sm-end">
                         <strong>{{ formatDate(devBlog.date) }}</strong>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="card-body">
+        <div class="card-body devblog-card__body border-0">
             <p class="card-text">
                 {{ devBlog.body }}
             </p>
