@@ -7,11 +7,14 @@
 :root {
   --bs-primary: #{colors.$primary};
   --bs-primary-rgb: 139, 119, 101;
+  --layout-header-offset: 65px;
+  --layout-footer-offset: 35px;
 }
 
 body {
   background-color: colors.$body-background-color;
-  padding-top: 65px;
+  padding-top: var(--layout-header-offset);
+  padding-bottom: var(--layout-footer-offset);
 }
 
 a {
