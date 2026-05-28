@@ -46,6 +46,8 @@ testem.log
 .env
 .env.*
 !.env.example
+!.env.deploy.example
+.env.deploy
 
 # Generated from .env at build-time
 src/environments/environment.generated.ts
