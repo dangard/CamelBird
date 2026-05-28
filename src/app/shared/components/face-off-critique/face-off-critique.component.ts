@@ -57,6 +57,10 @@ export class FaceOffCritiqueComponent implements OnInit {
         return this.sentenceStart + critiques;
     }
 
+    refreshCritique(): void {
+        this.displayString = this.getCritique(3);
+    }
+
     /**
      * Utility to format an arry using conjunctions.
      * @param {string array} critiques - An array of strings

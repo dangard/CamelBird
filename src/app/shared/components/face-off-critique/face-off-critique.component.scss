@@ -1,7 +1,24 @@
+@use "../../../../styles/colors" as colors;
+
 :host {
   display: block;
 }
 
 blockquote p {
   margin-bottom: 0;
+}
+
+.btn {
+  margin-top: 0.75rem;
+  background-color: colors.$primary;
+  border-color: colors.$primary;
+  color: #fff;
+
+  &:hover,
+  &:focus,
+  &:active {
+    background-color: colors.$color-primary-3;
+    border-color: colors.$color-primary-3;
+    color: #fff;
+  }
 }
