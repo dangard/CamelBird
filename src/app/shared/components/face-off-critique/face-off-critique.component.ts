@@ -11,11 +11,11 @@ export class FaceOffCritiqueComponent implements OnInit {
         "arbitrary",
         "obtuse",
         "void",
-        "remidial",
+        "remedial",
         "inadequate",
-        "uininteresting",
+        "uninteresting",
         "subpar",
-        "assymetrical",
+        "asymmetrical",
         "failing",
         "confusing",
         "horrifying",
@@ -25,15 +25,15 @@ export class FaceOffCritiqueComponent implements OnInit {
         "substandard",
         "shockingly inaccurate",
         "mundane",
-        "anonymouse",
+        "anonymous",
         "unresolved",
         "a vessel of your ineptitude",
     ];
-    sentenctStart = "Your creation is ";
-    dispalyString = "";
+    sentenceStart = "Your creation is ";
+    displayString = "";
 
     ngOnInit(): void {
-        this.dispalyString = this.getCritique(3);
+        this.displayString = this.getCritique(3);
     }
 
     /**
@@ -54,7 +54,7 @@ export class FaceOffCritiqueComponent implements OnInit {
 
         const critiques = this.formatCritique(sentence);
 
-        return this.sentenctStart + critiques;
+        return this.sentenceStart + critiques;
     }
 
     /**
