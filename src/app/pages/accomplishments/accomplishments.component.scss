@@ -1,4 +1,4 @@
-@use "../../../assets/styles/colors.scss" as colors;
+@use "../../../styles/colors" as colors;
 
 .dropCap {
     font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -7,7 +7,7 @@
 .accomplishments-hero {
     display: block;
     background-color: colors.$dark;
-    background-image: url("../../../assets/coderainbow.jpeg");
+    background-image: url("../../../assets/images/coderainbow.jpeg");
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;

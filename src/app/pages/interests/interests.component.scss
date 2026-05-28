@@ -1,8 +1,8 @@
-@use "../../../assets/styles/colors.scss" as colors;
+@use "../../../styles/colors" as colors;
 
 .interests-hero {
     background-color: colors.$dark;
-    background-image: url("../../../assets/DanielGardner.png");
+    background-image: url("../../../assets/images/DanielGardner.png");
     background-position: 50% 28%;
     background-size: cover;
     color: #fff;

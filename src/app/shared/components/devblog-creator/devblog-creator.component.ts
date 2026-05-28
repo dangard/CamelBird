@@ -10,6 +10,7 @@ import {
 import { DevblogService } from "../../services/devblog/devblog.service";
 import { Devblog } from "../../models/Devblog";
 import { NgIf } from "@angular/common";
+import { environment } from "../../../../environments/environment";
 
 @Component({
     selector: "app-devblog-creator",
@@ -19,7 +20,7 @@ import { NgIf } from "@angular/common";
     imports: [FormsModule, ReactiveFormsModule, NgIf],
 })
 export class DevblogCreatorComponent implements OnInit {
-    devBlog = new Devblog("", "", "dangard");
+    devBlog = new Devblog("", "", environment.devblogUser);
 
     devblogForm!: UntypedFormGroup;
 
@@ -42,7 +43,11 @@ export class DevblogCreatorComponent implements OnInit {
 
         this.submitError = null;
         const formData = this.devblogForm.value;
-        this.devBlog = new Devblog(formData.title, formData.body, "dangard");
+        this.devBlog = new Devblog(
+            formData.title,
+            formData.body,
+            environment.devblogUser,
+        );
         this.dataService.createDevBlog(this.devBlog.convertToJson()).subscribe({
             next: () => {
                 this.devblogForm.reset({ title: "", body: "" });

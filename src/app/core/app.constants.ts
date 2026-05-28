@@ -1,14 +1,9 @@
-import { Injectable } from "@angular/core";
-
-@Injectable({
-    providedIn: "root",
-})
-export class AppConstants {
-    public OPERATIONS = {
+export const APP_CONSTANTS = {
+    OPERATIONS: {
         DEVBLOG: {
             GET_ALL: "/devlogs",
             GET: "/devlog",
             CREATE: "/devlog",
         },
-    };
-}
+    },
+} as const;

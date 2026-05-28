@@ -1,0 +1,27 @@
+:host {
+	display: flex;
+	flex-direction: column;
+	min-height: calc(100vh - var(--layout-header-offset));
+	min-height: calc(100dvh - var(--layout-header-offset));
+}
+
+.page-body {
+	flex: 1 1 auto;
+	display: flex;
+	flex-direction: column;
+	box-sizing: border-box;
+	margin-bottom: 0;
+	padding-bottom: var(--layout-footer-offset);
+
+	> .row {
+		flex: 1 1 auto;
+		align-items: stretch;
+		min-height: 0;
+		width: 100%;
+	}
+
+	/* Stretch side gutters and center column to full main height */
+	> .row > [class*="col-"] {
+		align-self: stretch;
+	}
+}

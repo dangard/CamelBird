@@ -34,11 +34,13 @@ const defaults = prod
           apiServerUrl: "https://api.camelbird.com",
           enableDevlogCreate: false,
           enableDevBlog: true,
+          devblogUser: "dangard",
       }
     : {
           apiServerUrl: "http://localhost",
           enableDevlogCreate: true,
           enableDevBlog: true,
+          devblogUser: "dangard",
       };
 
 function envString(key, fallback) {
@@ -60,6 +62,7 @@ const environment = {
         defaults.enableDevlogCreate,
     ),
     enableDevBlog: envBool("NG_APP_ENABLE_DEV_BLOG", defaults.enableDevBlog),
+    devblogUser: envString("NG_APP_DEVBLOG_USER", defaults.devblogUser),
 };
 
 const outfile = resolve(root, "src/environments/environment.generated.ts");

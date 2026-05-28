@@ -1,0 +1,5 @@
+@use "../../../styles/colors" as colors;
+
+h1 {
+  color: colors.$heading-color-primary;
+}

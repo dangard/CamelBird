@@ -3,10 +3,9 @@
         <button
             class="navbar-toggler"
             type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#navbarSupportedContent"
+            (click)="toggleNav()"
+            [attr.aria-expanded]="!navCollapsed"
             aria-controls="navbarSupportedContent"
-            aria-expanded="false"
             aria-label="Toggle navigation"
         >
             <span class="navbar-toggler-icon"></span>
@@ -16,18 +15,23 @@
             href="#"
             routerLink="/camelbird"
             routerLinkActive="active"
+            (click)="closeNav()"
         >
             <img
                 class="d-inline-block align-text-top"
                 id="camel-logo"
-                src="assets/zflyingcamel.gif"
+                src="assets/images/zflyingcamel.gif"
                 width="40"
                 height="40"
                 alt=""
             />
             {{ title }}.com
         </a>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <div
+            class="navbar-collapse collapse"
+            [class.show]="!navCollapsed"
+            id="navbarSupportedContent"
+        >
             <ul
                 class="navbar-nav nav-pills mx-auto mb-2 mb-lg-0 gap-1 align-items-lg-center"
             >
@@ -36,6 +40,7 @@
                         class="nav-link rounded-pill px-3"
                         routerLink="/accomplishments"
                         routerLinkActive="active"
+                        (click)="closeNav()"
                         >Accomplishments</a
                     >
                 </li>
@@ -45,6 +50,7 @@
                         routerLink="/devblog"
                         routerLinkActive="active"
                         *ngIf="isDevBlogEnabled"
+                        (click)="closeNav()"
                         >Dev Blog</a
                     >
                 </li>
@@ -53,6 +59,7 @@
                         class="nav-link rounded-pill px-3"
                         routerLink="/interests"
                         routerLinkActive="active"
+                        (click)="closeNav()"
                         >Interests</a
                     >
                 </li>

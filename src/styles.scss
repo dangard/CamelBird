@@ -2,7 +2,7 @@
  * Palette + global overrides use Sass module `@use` only (no `@import` in app SCSS).
  * Bootstrap ships as compiled CSS (`angular.json`); upstream Sass deprecation warnings from Bootstrap internals do not affect this bundle path until/if SCSS is imported from node_modules.
  */
-@use "./assets/styles/colors.scss" as colors;
+@use "./styles/colors" as colors;
 
 :root {
   --bs-primary: #{colors.$primary};

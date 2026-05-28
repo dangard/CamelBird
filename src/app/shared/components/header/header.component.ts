@@ -13,8 +13,17 @@ import { NgIf } from "@angular/common";
 export class HeaderComponent implements OnInit {
     title = "CamelBird";
     isDevBlogEnabled = false;
+    navCollapsed = true;
 
     ngOnInit(): void {
         this.isDevBlogEnabled = environment.enableDevBlog;
+    }
+
+    toggleNav(): void {
+        this.navCollapsed = !this.navCollapsed;
+    }
+
+    closeNav(): void {
+        this.navCollapsed = true;
     }
 }

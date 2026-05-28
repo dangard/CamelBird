@@ -37,4 +37,12 @@ describe("HeaderComponent", () => {
             compiled.querySelector(".navbar .navbar-brand")?.textContent,
         ).toContain("CamelBird.com");
     });
+
+    it("should toggle nav collapsed state", () => {
+        expect(component.navCollapsed).toBe(true);
+        component.toggleNav();
+        expect(component.navCollapsed).toBe(false);
+        component.closeNav();
+        expect(component.navCollapsed).toBe(true);
+    });
 });
