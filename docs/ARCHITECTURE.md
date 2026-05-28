@@ -14,7 +14,7 @@
 
 ## Executive summary
 
-CamelBird is a small **Angular 20 standalone single-page application** for a personal site (accomplishments, interests, dev blog, branding). The build emits a static bundle to **`dist/CamelBird`** (application builder; browser assets at the project output root) and is served by **Apache** using a `.htaccess` that forces HTTPS and routes unknown paths back to `index.html` for client-side routing. The only dynamic feature is a **dev blog** that calls an external REST API; **`environment.apiServerUrl`** and feature flags ship from **`.env` → `environment.generated.ts`** at build/serve time (defaults match `https://api.camelbird.com` for production bundles when unset); that backend is not in this repository. The codebase is small (≈10 components, 2 services, route config in `app.routes.ts`, 1 constants class) with **Jest** unit tests and **GitHub Actions CI** (`lint`, production `build`, `test`). Remaining architectural watch items include **the UI feature flag (`enableDevlogCreate`) treated as UX-only** (authorization belongs on `api.camelbird.com`). Client-side **logging + HTTP failure interception** and **inline dev-blog errors** are now in place; optional vendor analytics or CSP tightening remains host-dependent—see **`docs/APACHE_CONFIG.md`**.
+CamelBird is a small **Angular 20 standalone single-page application** for a personal site (accomplishments, interests, dev blog, branding). The build emits a static bundle to **`dist/CamelBird`** (application builder; browser assets at the project output root) and is served by **Apache** using a `.htaccess` that forces HTTPS and routes unknown paths back to `index.html` for client-side routing. The only dynamic feature is a **dev blog** that calls an external REST API; **`environment.apiServerUrl`** and feature flags ship from **`.env` → `environment.generated.ts`** at build/serve time (defaults match `https://api.camelbird.com` for production bundles when unset); that backend is not in this repository. The codebase is small (≈10 components, 2 services, route config in `app.routes.ts`, 1 constants class) with **Jest** unit tests and **local quality gates** (`npm run verify`: `lint`, production `build`, `test`). Application repos intentionally **do not use GitHub Actions**. Remaining architectural watch items include **the UI feature flag (`enableDevlogCreate`) treated as UX-only** (authorization belongs on `api.camelbird.com`). Client-side **logging + HTTP failure interception** and **inline dev-blog errors** are now in place; optional vendor analytics or CSP tightening remains host-dependent—see **`docs/APACHE_CONFIG.md`**.
 
 ## Context
 
@@ -204,7 +204,7 @@ sequenceDiagram
 - **Lint**: `npm run lint` → `tsc --noEmit && eslint . --ext js,ts,json,html --quiet --fix` (config: `.eslintrc.json` with `@angular-eslint/recommended`).
 - **Test**: `npm test` → **`jest --ci --runInBand`** (`jest.config.cjs`, `setup-jest.ts` with zone test env from `jest-preset-angular`).
 - **Tests present**: spec files for routed/shared components, **`DevblogService`**, **`EventListenerService`**, and **`LoggerService`** (`*.component.spec.ts`, `*.service.spec.ts`).
-- **CI**: `.github/workflows/ci.yml` — Node 20, `npm ci` (**`prepare`** writes **development** `environment.generated.ts` for lint/tests), lint, Jest, then **`npm run build`** (production env generation + **`ng build`**).
+- **Verify (local)**: `npm run verify` — Node 20 (`.nvmrc`), **`prepare`** writes **development** `environment.generated.ts` for lint/tests, lint, Jest, then **`npm run build`** (production env generation + **`ng build`**). No GitHub Actions or hosted CI.
 - **IaC**: **None** (no Terraform, Pulumi, Bicep, CloudFormation, K8s manifests).
 - **Local-dev tooling**: ESLint + Prettier + TypeScript strict; `.editorconfig`, `.nvmrc` (Node 20), `.gitattributes` (line endings).
 
@@ -215,7 +215,7 @@ Listed roughly by impact for an architecture review.
 | # | Issue | Evidence | Recommendation | Trade-off |
 |---|-------|----------|----------------|-----------|
 | 1 | ~~**EOL Angular toolchain**~~ | *Addressed*: Angular **20**, TypeScript **5.8**, application builder | Stay on supported majors; rerun `ng update` on cadence. | Ongoing upkeep. |
-| 2 | ~~**No CI**~~ | *Addressed*: `.github/workflows/ci.yml` | Extend with deploy preview or bundle-size reporting if desired. | More YAML to maintain. |
+| 2 | ~~**No CI**~~ | *Addressed (local)*: `npm run verify` | Run **`npm run verify`** before merge; optional bundle-size reporting locally if desired. | No hosted CI by policy (no GitHub Actions). |
 | 3 | ~~**Untyped HTTP**~~ | *Improved*: `devblog-api.types.ts` + typed `DevblogService` methods | Extend types if API grows; optionally generate from OpenAPI. | Schema/source of truth outside repo. |
 | 4 | **Feature flag treated as a control** | `environment.enableDevlogCreate` only hides the creator UI; service still exposes `createDevBlog` | Enforce authorization on `api.camelbird.com`. Keep flag as UX-only; document it is **not** a security boundary. | Server-side effort. |
 | 5 | ~~**jQuery + Bootstrap JS**~~ | *Removed* from `angular.json` scripts | N/A unless new global scripts are added. | — |
@@ -238,4 +238,4 @@ Suggested next increments:
 - **Apache config** — Prefer **`docs/APACHE_CONFIG.md`** + **`src/.htaccess`** together; note whether production TLS terminates at CDN vs origin so CSP/HSTS apply in the right layer.
 - **`FaceOffCritiqueComponent`** — Where is it embedded in templates? It is standalone but not directly attached to a route.
 - **`enableDevBlog`** vs **`enableDevlogCreate`** — Are both intended to remain UI-only flags forever, or is one of them headed toward server-side enforcement?
-- **Tests** — CI runs Jest on every push/PR via GitHub Actions.
+- **Tests** — Run **`npm test`** (Jest) locally before merge; **`npm run verify`** runs the full gate set.

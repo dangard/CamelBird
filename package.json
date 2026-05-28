@@ -15,7 +15,8 @@
     "postbuild": "node scripts/generate-environment.mjs development",
     "watch": "node scripts/generate-environment.mjs development && ng build --watch --configuration development",
     "test": "jest --ci --runInBand",
-    "lint": "tsc --noEmit && eslint . --ext js,ts,json,html --quiet --fix"
+    "lint": "tsc --noEmit && eslint . --ext js,ts,json,html --quiet --fix",
+    "verify": "npm run lint && npm test && npm run build"
   },
   "private": true,
   "dependencies": {

@@ -1,11 +1,10 @@
 <!--
 Sync Impact Report
-- Version change: (initial adoption from template) → 1.0.0
-- Principles: Template placeholders replaced with five CamelBird Portfolio principles (no renames).
-- Added sections: Stack & deployment reality; Workflow & Speckify alignment.
-- Removed: Inline HTML examples only (superseded by concrete text).
-- Templates: plan-template.md Constitution Check ✅ updated | spec-template.md ✅ no change needed |
-  tasks-template.md ✅ no change needed | constitution-template.md left as upstream shell for new projects.
+- Version change: 1.0.0 → 1.0.1
+- Principles: III (Automated quality gates) — local verify only; no GitHub Actions.
+- Added sections: none
+- Removed: `.github/workflows/ci.yml` reference
+- Templates: plan-template.md Constitution Check ✅ updated
 - Follow-ups: None.
 -->
 
@@ -30,9 +29,10 @@ docs.
 
 ### III. Automated quality gates
 
-Changes MUST preserve **green CI**: `npm run lint`, `npm test`, and production **`npm run build`**
-(as wired in `.github/workflows/ci.yml`). Logic-affecting changes SHOULD update or add **Jest** tests
-when practical.
+Changes MUST keep **`npm run lint`**, **`npm test`**, and production **`npm run build`** passing
+before merge (run locally or via **`npm run verify`**). Application repositories MUST NOT use
+**GitHub Actions** or other hosted CI workflows. Logic-affecting changes SHOULD update or add **Jest**
+tests when practical.
 
 ### IV. Honest security posture
 
@@ -57,8 +57,8 @@ reality matches repo truth.
 
 ## Workflow & Speckify alignment
 
-- **Local / CI**: Follow `package.json` scripts (`prepare`, `prelint`, `pretest`, `start`, `build`,
-  `postbuild`) for environment generation.
+- **Local verification**: Follow `package.json` scripts (`prepare`, `prelint`, `pretest`, `start`,
+  `build`, `postbuild`, `verify`) for environment generation and pre-merge checks.
 - **Speckify**: Feature work using Speckit MUST keep `spec.md`, `plan.md`, and `tasks.md` consistent
   with this constitution; plans MUST include a **Constitution Check** pass (see
   `.specify/templates/plan-template.md`).
@@ -73,4 +73,4 @@ reality matches repo truth.
   exceptions MUST be justified in the PR or plan notes.
 - **Runtime technical reference**: Prefer `docs/ARCHITECTURE.md` for architecture truth.
 
-**Version**: 1.0.0 | **Ratified**: 2026-05-13 | **Last Amended**: 2026-05-13
+**Version**: 1.0.1 | **Ratified**: 2026-05-13 | **Last Amended**: 2026-05-28

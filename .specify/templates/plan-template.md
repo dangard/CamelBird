@@ -46,8 +46,8 @@ Verify against `.specify/memory/constitution.md` (**CamelBird Portfolio**):
   without gratuitous readability/accessibility regressions.
 - **Stack fidelity**: Plan respects Angular standalone structure and `.env` → codegen workflow;
   `.env.example` updated if new **`NG_APP_*`** variables appear.
-- **Quality gates**: Plan states how **`lint`**, **`test`**, and **`npm run build`** stay passing on CI,
-  or documents justified exceptions.
+- **Quality gates**: Plan states how **`lint`**, **`test`**, and **`npm run build`** stay passing locally
+  (**`npm run verify`**); no GitHub Actions. Document justified exceptions if any.
 - **Security honesty**: No assumption that UI-only flags substitute for API/server authorization.
 - **Documentation**: `docs/ARCHITECTURE.md` and/or `docs/APACHE_CONFIG.md` updated when hosting,
   routing, API integration, or env keys change materially.
