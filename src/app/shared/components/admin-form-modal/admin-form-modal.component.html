@@ -1,0 +1,53 @@
+<ng-container *ngIf="open">
+    <div
+        class="modal fade show d-block"
+        tabindex="-1"
+        role="dialog"
+        aria-modal="true"
+        [attr.aria-labelledby]="titleId"
+    >
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title h5 mb-0" [id]="titleId">
+                        {{ title }}
+                    </h2>
+                    <button
+                        type="button"
+                        class="btn-close"
+                        aria-label="Close"
+                        (click)="closed.emit()"
+                    ></button>
+                </div>
+                <form (submit)="onSubmit($event)">
+                    <div class="modal-body">
+                        <ng-content />
+                        <div
+                            class="alert alert-danger mt-3 mb-0"
+                            *ngIf="formError"
+                        >
+                            {{ formError }}
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button
+                            type="button"
+                            class="btn btn-outline-secondary"
+                            (click)="closed.emit()"
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            type="submit"
+                            class="btn btn-primary"
+                            [disabled]="submitDisabled"
+                        >
+                            {{ submitLabel }}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="modal-backdrop fade show"></div>
+</ng-container>

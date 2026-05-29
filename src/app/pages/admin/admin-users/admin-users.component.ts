@@ -9,6 +9,8 @@ import {
 } from "@angular/forms";
 
 import { can } from "../../../core/auth/role-capabilities";
+import { AdminFormModalComponent } from "../../../shared/components/admin-form-modal/admin-form-modal.component";
+import { AdminPageHeaderComponent } from "../../../shared/components/admin-page-header/admin-page-header.component";
 import type { StaffRole } from "../../../shared/models/auth-api.types";
 import type {
     UserPatchRequest,
@@ -18,11 +20,31 @@ import { ApiErrorMapperService } from "../../../shared/services/auth/api-error-m
 import { AuthService } from "../../../shared/services/auth/auth.service";
 import { UsersAdminService } from "../../../shared/services/users/users-admin.service";
 import { CrudListPanelComponent } from "../../../shared/components/crud-list-panel/crud-list-panel.component";
+import { optionalPasswordValidator } from "../../../shared/utils/form-validators";
+import {
+    hasRecordChanges,
+    replaceInList,
+} from "../../../shared/utils/list-utils";
+
+interface EditUserBaseline {
+    email: string;
+    first_name: string;
+    last_name: string;
+    role: StaffRole;
+    is_active: boolean;
+}
 
 @Component({
     selector: "app-admin-users",
     standalone: true,
-    imports: [NgIf, NgFor, ReactiveFormsModule, CrudListPanelComponent],
+    imports: [
+        NgIf,
+        NgFor,
+        ReactiveFormsModule,
+        CrudListPanelComponent,
+        AdminPageHeaderComponent,
+        AdminFormModalComponent,
+    ],
     templateUrl: "./admin-users.component.html",
     styleUrls: ["./admin-users.component.scss"],
 })
@@ -34,10 +56,13 @@ export class AdminUsersComponent implements OnInit {
     users: UserRecord[] = [];
     loading = true;
     errorMessage: string | null = null;
-    formError: string | null = null;
-    fieldErrors: Record<string, string> = {};
+    createFormError: string | null = null;
+    editFormError: string | null = null;
+    actionError: string | null = null;
     submitting = false;
-    editingId: number | null = null;
+    createModalOpen = false;
+    editingUser: UserRecord | null = null;
+    private editBaseline: EditUserBaseline | null = null;
 
     createForm = new FormGroup({
         username: new FormControl("", {
@@ -64,7 +89,7 @@ export class AdminUsersComponent implements OnInit {
         }),
         password: new FormControl("", {
             nonNullable: true,
-            validators: [AdminUsersComponent.optionalPassword],
+            validators: [optionalPasswordValidator],
         }),
         first_name: new FormControl("", { nonNullable: true }),
         last_name: new FormControl("", { nonNullable: true }),
@@ -84,19 +109,24 @@ export class AdminUsersComponent implements OnInit {
         return can(this.role, "users.patch");
     }
 
-    /** Admin-only fields (password, role, is_active) per API contract. */
     get isAdmin(): boolean {
         return this.role === "admin";
     }
 
-    private static optionalPassword(
-        control: FormControl<string>,
-    ): { minlength: { requiredLength: number; actualLength: number } } | null {
-        const value = control.value.trim();
-        if (!value) return null;
-        return value.length >= 8
-            ? null
-            : { minlength: { requiredLength: 8, actualLength: value.length } };
+    get editHasChanges(): boolean {
+        const raw = this.editForm.getRawValue();
+        return hasRecordChanges(
+            this.editBaseline,
+            {
+                email: raw.email,
+                first_name: raw.first_name,
+                last_name: raw.last_name,
+                role: raw.role,
+                is_active: raw.is_active,
+            },
+            ["email", "first_name", "last_name", "role", "is_active"],
+            () => raw.password.trim().length > 0,
+        );
     }
 
     ngOnInit(): void {
@@ -121,45 +151,65 @@ export class AdminUsersComponent implements OnInit {
         });
     }
 
+    openCreateModal(): void {
+        if (!this.canCreate) return;
+
+        this.createModalOpen = true;
+        this.createFormError = null;
+        this.createForm.reset({
+            username: "",
+            email: "",
+            password: "",
+            first_name: "",
+            last_name: "",
+            role: "read_only",
+        });
+    }
+
+    closeCreateModal(): void {
+        this.createModalOpen = false;
+        this.createFormError = null;
+    }
+
     createUser(): void {
-        if (!this.canCreate || this.createForm.invalid || this.submitting)
+        if (
+            !this.canCreate ||
+            !this.createModalOpen ||
+            this.createForm.invalid ||
+            this.submitting
+        )
             return;
 
         this.submitting = true;
-        this.formError = null;
-        this.fieldErrors = {};
+        this.createFormError = null;
 
         this.usersService.create(this.createForm.getRawValue()).subscribe({
-            next: () => {
+            next: (created) => {
                 this.submitting = false;
-                this.createForm.reset({
-                    username: "",
-                    email: "",
-                    password: "",
-                    first_name: "",
-                    last_name: "",
-                    role: "read_only",
-                });
-                this.loadUsers();
+                this.users = [...this.users, created];
+                this.closeCreateModal();
             },
             error: (err: unknown) => {
                 this.submitting = false;
-                if (err instanceof HttpErrorResponse) {
-                    this.formError = this.errors.mapError(
-                        err,
-                        "Could not create user",
-                    );
-                    this.fieldErrors = this.errors.fieldErrors(err);
-                } else {
-                    this.formError = "Could not create user";
-                }
+                this.createFormError =
+                    err instanceof HttpErrorResponse
+                        ? this.errors.mapError(err, "Could not create user")
+                        : "Could not create user";
             },
         });
     }
 
-    startEdit(user: UserRecord): void {
+    openEditModal(user: UserRecord): void {
         if (!this.canPatch) return;
-        this.editingId = user.id;
+
+        this.editingUser = user;
+        this.editBaseline = {
+            email: user.email,
+            first_name: user.first_name,
+            last_name: user.last_name,
+            role: user.role,
+            is_active: user.is_active,
+        };
         this.editForm.reset({
             email: user.email,
             password: "",
@@ -168,26 +218,28 @@ export class AdminUsersComponent implements OnInit {
             role: user.role,
             is_active: user.is_active,
         });
-        this.formError = null;
-        this.fieldErrors = {};
+        this.editFormError = null;
     }
 
-    cancelEdit(): void {
-        this.editingId = null;
+    closeEditModal(): void {
+        this.editingUser = null;
+        this.editBaseline = null;
+        this.editFormError = null;
     }
 
     saveEdit(): void {
         if (
             !this.canPatch ||
-            this.editingId === null ||
+            !this.editingUser ||
             this.editForm.invalid ||
+            !this.editHasChanges ||
             this.submitting
         )
             return;
 
+        const userId = this.editingUser.id;
         this.submitting = true;
-        this.formError = null;
-        this.fieldErrors = {};
+        this.editFormError = null;
 
         const { password, role, is_active, ...fields } =
             this.editForm.getRawValue();
@@ -199,39 +251,35 @@ export class AdminUsersComponent implements OnInit {
             if (nextPassword) payload.password = nextPassword;
         }
 
-        this.usersService.patch(this.editingId, payload).subscribe({
-                next: () => {
-                    this.submitting = false;
-                    this.editingId = null;
-                    this.loadUsers();
-                },
-                error: (err: unknown) => {
-                    this.submitting = false;
-                    if (err instanceof HttpErrorResponse) {
-                        this.formError = this.errors.mapError(
-                            err,
-                            "Could not update user",
-                        );
-                        this.fieldErrors = this.errors.fieldErrors(err);
-                    } else {
-                        this.formError = "Could not update user";
-                    }
-                },
-            });
+        this.usersService.patch(userId, payload).subscribe({
+            next: (updated) => {
+                this.submitting = false;
+                this.users = replaceInList(this.users, updated);
+                this.closeEditModal();
+            },
+            error: (err: unknown) => {
+                this.submitting = false;
+                this.editFormError =
+                    err instanceof HttpErrorResponse
+                        ? this.errors.mapError(err, "Could not update user")
+                        : "Could not update user";
+            },
+        });
     }
 
     deactivate(user: UserRecord): void {
         if (!this.canPatch || this.submitting) return;
 
         this.submitting = true;
+        this.actionError = null;
         this.usersService.patch(user.id, { is_active: false }).subscribe({
-            next: () => {
+            next: (updated) => {
                 this.submitting = false;
-                this.loadUsers();
+                this.users = replaceInList(this.users, updated);
             },
             error: (err: unknown) => {
                 this.submitting = false;
-                this.formError =
+                this.actionError =
                     err instanceof HttpErrorResponse
                         ? this.errors.mapError(err, "Could not deactivate user")
                         : "Could not deactivate user";

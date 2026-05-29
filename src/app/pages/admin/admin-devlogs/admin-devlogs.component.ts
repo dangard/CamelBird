@@ -9,17 +9,36 @@ import {
 } from "@angular/forms";
 
 import { can } from "../../../core/auth/role-capabilities";
+import { AdminFormModalComponent } from "../../../shared/components/admin-form-modal/admin-form-modal.component";
+import { AdminPageHeaderComponent } from "../../../shared/components/admin-page-header/admin-page-header.component";
 import type { DevBlogListItem } from "../../../shared/models/devblog-api.types";
 import type { StaffRole } from "../../../shared/models/auth-api.types";
 import { ApiErrorMapperService } from "../../../shared/services/auth/api-error-mapper.service";
 import { AuthService } from "../../../shared/services/auth/auth.service";
 import { DevblogAdminService } from "../../../shared/services/devblog/devblog-admin.service";
 import { CrudListPanelComponent } from "../../../shared/components/crud-list-panel/crud-list-panel.component";
+import {
+    hasRecordChanges,
+    replaceInList,
+} from "../../../shared/utils/list-utils";
+
+interface EditDevlogBaseline {
+    title: string;
+    body: string;
+    is_published: boolean;
+}
 
 @Component({
     selector: "app-admin-devlogs",
     standalone: true,
-    imports: [NgIf, NgFor, ReactiveFormsModule, CrudListPanelComponent],
+    imports: [
+        NgIf,
+        NgFor,
+        ReactiveFormsModule,
+        CrudListPanelComponent,
+        AdminPageHeaderComponent,
+        AdminFormModalComponent,
+    ],
     templateUrl: "./admin-devlogs.component.html",
     styleUrls: ["./admin-devlogs.component.scss"],
 })
@@ -31,9 +50,13 @@ export class AdminDevlogsComponent implements OnInit {
     devlogs: DevBlogListItem[] = [];
     loading = true;
     errorMessage: string | null = null;
-    formError: string | null = null;
+    createFormError: string | null = null;
+    editFormError: string | null = null;
+    actionError: string | null = null;
     submitting = false;
-    editingId: string | null = null;
+    createModalOpen = false;
+    editingEntry: DevBlogListItem | null = null;
+    private editBaseline: EditDevlogBaseline | null = null;
 
     createForm = new FormGroup({
         title: new FormControl("", {
@@ -72,10 +95,17 @@ export class AdminDevlogsComponent implements OnInit {
         return can(this.role, "devlogs.delete");
     }
 
+    get editHasChanges(): boolean {
+        const raw = this.editForm.getRawValue();
+        return hasRecordChanges(this.editBaseline, raw, [
+            "title",
+            "body",
+            "is_published",
+        ]);
+    }
+
     ngOnInit(): void {
         this.loadDevlogs();
-        const user = this.auth.getCurrentUser();
-        if (user?.username) this.createForm.patchValue({ user: user.username });
     }
 
     loadDevlogs(): void {
@@ -96,22 +126,45 @@ export class AdminDevlogsComponent implements OnInit {
         });
     }
 
+    openCreateModal(): void {
+        if (!this.canCreate) return;
+
+        this.createModalOpen = true;
+        this.createFormError = null;
+        const username = this.auth.getCurrentUser()?.username ?? "";
+        this.createForm.reset({
+            title: "",
+            body: "",
+            user: username,
+        });
+    }
+
+    closeCreateModal(): void {
+        this.createModalOpen = false;
+        this.createFormError = null;
+    }
+
     createDevlog(): void {
-        if (!this.canCreate || this.createForm.invalid || this.submitting)
+        if (
+            !this.canCreate ||
+            !this.createModalOpen ||
+            this.createForm.invalid ||
+            this.submitting
+        )
             return;
 
         this.submitting = true;
-        this.formError = null;
+        this.createFormError = null;
 
         this.devlogsService.create(this.createForm.getRawValue()).subscribe({
             next: () => {
                 this.submitting = false;
-                this.createForm.patchValue({ title: "", body: "" });
-                this.loadDevlogs();
+                this.closeCreateModal();
+                this.syncDevlogs();
             },
             error: (err: unknown) => {
                 this.submitting = false;
-                this.formError =
+                this.createFormError =
                     err instanceof HttpErrorResponse
                         ? this.errors.mapError(err, "Could not create devlog")
                         : "Could not create devlog";
@@ -119,44 +172,54 @@ export class AdminDevlogsComponent implements OnInit {
         });
     }
 
-    startEdit(entry: DevBlogListItem): void {
+    openEditModal(entry: DevBlogListItem): void {
         if (!this.canPatch) return;
-        this.editingId = entry.id;
-        this.editForm.patchValue({
+
+        this.editingEntry = entry;
+        this.editBaseline = {
+            title: entry.title,
+            body: entry.body,
+            is_published: entry.is_published,
+        };
+        this.editForm.reset({
             title: entry.title,
             body: entry.body,
             is_published: entry.is_published,
         });
-        this.formError = null;
+        this.editFormError = null;
     }
 
-    cancelEdit(): void {
-        this.editingId = null;
+    closeEditModal(): void {
+        this.editingEntry = null;
+        this.editBaseline = null;
+        this.editFormError = null;
     }
 
     saveEdit(): void {
         if (
             !this.canPatch ||
-            !this.editingId ||
+            !this.editingEntry ||
             this.editForm.invalid ||
+            !this.editHasChanges ||
             this.submitting
         )
             return;
 
+        const entryId = this.editingEntry.id;
         this.submitting = true;
-        this.formError = null;
+        this.editFormError = null;
 
         this.devlogsService
-            .patch(this.editingId, this.editForm.getRawValue())
+            .patch(entryId, this.editForm.getRawValue())
             .subscribe({
-                next: () => {
+                next: (updated) => {
                     this.submitting = false;
-                    this.editingId = null;
-                    this.loadDevlogs();
+                    this.devlogs = replaceInList(this.devlogs, updated);
+                    this.closeEditModal();
                 },
                 error: (err: unknown) => {
                     this.submitting = false;
-                    this.formError =
+                    this.editFormError =
                         err instanceof HttpErrorResponse
                             ? this.errors.mapError(
                                   err,
@@ -171,19 +234,30 @@ export class AdminDevlogsComponent implements OnInit {
         if (!this.canDelete || this.submitting) return;
 
         this.submitting = true;
+        this.actionError = null;
         this.devlogsService.delete(entry.id).subscribe({
             next: () => {
                 this.submitting = false;
-                if (this.editingId === entry.id) this.editingId = null;
-
-                this.loadDevlogs();
+                if (this.editingEntry?.id === entry.id) this.closeEditModal();
+                this.devlogs = this.devlogs.filter((row) => row.id !== entry.id);
             },
             error: (err: unknown) => {
                 this.submitting = false;
-                this.formError =
+                this.actionError =
                     err instanceof HttpErrorResponse
                         ? this.errors.mapError(err, "Could not delete devlog")
                         : "Could not delete devlog";
+            },
+        });
+    }
+
+    private syncDevlogs(): void {
+        this.devlogsService.list().subscribe({
+            next: (rows) => {
+                this.devlogs = rows;
+            },
+            error: () => {
+                // Keep list as-is; create succeeded.
             },
         });
     }

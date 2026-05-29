@@ -1,4 +1,11 @@
-<h1 class="h3 mb-3">Devlogs</h1>
+<app-admin-page-header
+    title="Devlogs"
+    createLabel="Create devlog"
+    [showCreate]="canCreate"
+    (create)="openCreateModal()"
+/>
+
+<div class="alert alert-danger" *ngIf="actionError">{{ actionError }}</div>
 
 <app-crud-list-panel
     [loading]="loading"
@@ -29,7 +36,7 @@
                         type="button"
                         class="btn btn-link btn-sm p-0 me-2"
                         *ngIf="canPatch"
-                        (click)="startEdit(entry)"
+                        (click)="openEditModal(entry)"
                     >
                         Edit
                     </button>
@@ -48,96 +55,73 @@
     </div>
 </app-crud-list-panel>
 
-<div class="alert alert-danger" *ngIf="formError">{{ formError }}</div>
-
-<div class="card shadow-sm mb-4" *ngIf="canCreate">
-    <div class="card-header">Create devlog</div>
-    <div class="card-body">
-        <form [formGroup]="createForm" (ngSubmit)="createDevlog()">
-            <div class="mb-2">
-                <label class="form-label" for="devlog-title">Title</label>
-                <input
-                    id="devlog-title"
-                    class="form-control"
-                    formControlName="title"
-                />
-            </div>
-            <div class="mb-2">
-                <label class="form-label" for="devlog-body">Body</label>
-                <textarea
-                    id="devlog-body"
-                    class="form-control"
-                    rows="4"
-                    formControlName="body"
-                ></textarea>
-            </div>
-            <div class="mb-2">
-                <label class="form-label" for="devlog-user">Author</label>
-                <input
-                    id="devlog-user"
-                    class="form-control"
-                    formControlName="user"
-                />
-            </div>
-            <button
-                type="submit"
-                class="btn btn-primary"
-                [disabled]="createForm.invalid || submitting"
-            >
-                Create
-            </button>
-        </form>
+<div [formGroup]="createForm">
+    <app-admin-form-modal
+        [open]="createModalOpen"
+        title="Create devlog"
+        titleId="create-devlog-title"
+        submitLabel="Create"
+        [formError]="createFormError"
+        [submitDisabled]="createForm.invalid || submitting"
+        (closed)="closeCreateModal()"
+        (submitted)="createDevlog()"
+    >
+    <div class="mb-3">
+        <label class="form-label" for="devlog-title">Title</label>
+        <input
+            id="devlog-title"
+            class="form-control"
+            formControlName="title"
+        />
     </div>
+    <div class="mb-3">
+        <label class="form-label" for="devlog-body">Body</label>
+        <textarea
+            id="devlog-body"
+            class="form-control"
+            rows="6"
+            formControlName="body"
+        ></textarea>
+    </div>
+    <div class="mb-0">
+        <label class="form-label" for="devlog-user">Author</label>
+        <input id="devlog-user" class="form-control" formControlName="user" />
+    </div>
+</app-admin-form-modal>
 </div>
 
-<div class="card shadow-sm" *ngIf="editingId && canPatch">
-    <div class="card-header">Edit devlog</div>
-    <div class="card-body">
-        <form [formGroup]="editForm" (ngSubmit)="saveEdit()">
-            <div class="mb-2">
-                <label class="form-label" for="edit-title">Title</label>
-                <input
-                    id="edit-title"
-                    class="form-control"
-                    formControlName="title"
-                />
-            </div>
-            <div class="mb-2">
-                <label class="form-label" for="edit-body">Body</label>
-                <textarea
-                    id="edit-body"
-                    class="form-control"
-                    rows="4"
-                    formControlName="body"
-                ></textarea>
-            </div>
-            <div class="form-check mb-2">
-                <input
-                    id="edit-published"
-                    class="form-check-input"
-                    type="checkbox"
-                    formControlName="is_published"
-                />
-                <label class="form-check-label" for="edit-published"
-                    >Published</label
-                >
-            </div>
-            <div class="d-flex gap-2">
-                <button
-                    type="submit"
-                    class="btn btn-primary"
-                    [disabled]="editForm.invalid || submitting"
-                >
-                    Save
-                </button>
-                <button
-                    type="button"
-                    class="btn btn-outline-secondary"
-                    (click)="cancelEdit()"
-                >
-                    Cancel
-                </button>
-            </div>
-        </form>
+<div [formGroup]="editForm">
+    <app-admin-form-modal
+        [open]="editingEntry !== null"
+        [title]="'Edit devlog: ' + (editingEntry?.title ?? '')"
+        titleId="edit-devlog-title"
+        submitLabel="Save"
+        [formError]="editFormError"
+        [submitDisabled]="editForm.invalid || submitting || !editHasChanges"
+        (closed)="closeEditModal()"
+        (submitted)="saveEdit()"
+    >
+    <div class="mb-3">
+        <label class="form-label" for="edit-title">Title</label>
+        <input id="edit-title" class="form-control" formControlName="title" />
     </div>
+    <div class="mb-3">
+        <label class="form-label" for="edit-body">Body</label>
+        <textarea
+            id="edit-body"
+            class="form-control"
+            rows="6"
+            formControlName="body"
+        ></textarea>
+    </div>
+    <div class="form-check">
+        <input
+            id="edit-published"
+            class="form-check-input"
+            type="checkbox"
+            formControlName="is_published"
+        />
+        <label class="form-check-label" for="edit-published">Published</label>
+    </div>
+</app-admin-form-modal>
 </div>

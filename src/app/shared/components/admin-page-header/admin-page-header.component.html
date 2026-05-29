@@ -1,0 +1,11 @@
+<div class="d-flex justify-content-between align-items-center mb-3 gap-2">
+    <h1 class="h3 mb-0">{{ title }}</h1>
+    <button
+        type="button"
+        class="btn btn-primary btn-sm"
+        *ngIf="showCreate && createLabel"
+        (click)="create.emit()"
+    >
+        {{ createLabel }}
+    </button>
+</div>
