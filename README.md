@@ -12,11 +12,27 @@ Run `ng generate component component-name` to generate a new component. You can 
 
 ## Build
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+Run `npm run build` to build the project for production (DreamHost deploy). The build artifacts will be stored in the `dist/CamelBird/` directory and call **`https://api.camelbird.com`**.
+
+For local Apache hosting on `*.camelbird.local`, use:
+
+```bash
+npm run build:local
+```
+
+This generates the development environment (API URL from `.env.development`, typically **`https://api.camelbird.local`**) and outputs an unoptimized bundle to `dist/CamelBird/`. Copy that folder to your local Apache docroot and hard-refresh the browser.
+
+| Command | SPA origin | API target |
+|---------|------------|------------|
+| `npm start` | `http://localhost:4200` | `.env.development` → local API |
+| `npm run build:local` | local Apache / `*.camelbird.local` | `.env.development` → local API |
+| `npm run build` | `https://www.camelbird.com` | `https://api.camelbird.com` |
+
+Copy **`.env.example`** → **`.env`** and optionally **`.env.development`** to override `NG_APP_*` values. See `docs/ARCHITECTURE.md` for details.
 
 ## Running unit tests
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+Run `npm test` to execute the unit tests via [Jest](https://jestjs.io).
 
 ## Running end-to-end tests
 

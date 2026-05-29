@@ -84,4 +84,28 @@ describe("ContactFormComponent", () => {
 
         httpMock.expectNone((request) => request.url.endsWith("/contact"));
     });
+
+    it("should show a friendly message on network failure", () => {
+        component.contactForm.patchValue({
+            name: "Jane Doe",
+            email: "jane@example.com",
+            message: "Hello",
+            website: "",
+        });
+
+        component.sendContact();
+
+        const req = httpMock.expectOne((request) =>
+            request.url.endsWith("/contact"),
+        );
+        req.error(new ProgressEvent("error"), {
+            status: 0,
+            statusText: "Unknown Error",
+        });
+
+        expect(component.submitError).toBe(
+            "We couldn't reach the server. Check your connection and try again.",
+        );
+        expect(component.submitted).toBe(false);
+    });
 });

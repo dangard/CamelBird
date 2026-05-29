@@ -217,7 +217,8 @@ sequenceDiagram
 ## Development workflow
 
 - **Run locally**: `npm start` → regenerates **development** `environment.generated.ts` then `ng serve` on **`http://localhost:4200/`**. Copy **`.env.example`** → **`.env`** and set **`NG_APP_*`** (optional layered **`.env.development`** overrides **`.env`**).
-- **Build**: `npm run build` → generates **production** `environment.generated.ts` then **`ng build`** (`defaultConfiguration`: **production`).
+- **Build (production)**: `npm run build` → generates **production** `environment.generated.ts` then **`ng build`** (`defaultConfiguration`: **production**). Targets **`https://api.camelbird.com`** for DreamHost deploy.
+- **Build (local Apache)**: `npm run build:local` → generates **development** `environment.generated.ts` then **`ng build --configuration development`**. Use when serving the SPA from **`*.camelbird.local`** so API calls hit **`https://api.camelbird.local`** (production API CORS does not allow `.local` origins).
 - **Watch**: `npm run watch` → `ng build --watch --configuration development`.
 - **Lint**: `npm run lint` → `tsc --noEmit && eslint . --ext js,ts,json,html --quiet --fix` (config: `.eslintrc.json` with `@angular-eslint/recommended`).
 - **Test**: `npm test` → **`jest --ci --runInBand`** (`jest.config.cjs`, `setup-jest.ts` with zone test env from `jest-preset-angular`).

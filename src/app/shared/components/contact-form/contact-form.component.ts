@@ -87,6 +87,12 @@ export class ContactFormComponent implements OnInit {
                             ? (body as { message: string }).message
                             : null;
 
+                    if (err.status === 0) {
+                        this.submitError =
+                            "We couldn't reach the server. Check your connection and try again.";
+                        return;
+                    }
+
                     if (err.status === 429) {
                         this.submitError =
                             fromApi ??
