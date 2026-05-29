@@ -3,6 +3,7 @@
  * Bootstrap ships as compiled CSS (`angular.json`); upstream Sass deprecation warnings from Bootstrap internals do not affect this bundle path until/if SCSS is imported from node_modules.
  */
 @use "./styles/colors" as colors;
+@use "./styles/navbar";
 
 :root {
   --bs-primary: #{colors.$primary};

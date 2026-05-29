@@ -1,99 +1,45 @@
-@use "../../../../styles/colors" as colors;
-
 nav.navbar {
-  /* Global `a:hover` sets bold — keep navbar typography steady */
-  a:hover {
-    font-weight: normal;
+  .header-navbar-inner {
+    position: relative;
+    width: 100%;
   }
 
-  &.bg-primary {
-    /* matches palette-structure (#8b7765) */
-    --bs-primary-rgb: 139, 119, 101;
+  .header-navbar-start {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
   }
 
-  .navbar-brand {
-    color: #fff;
-    text-decoration: none;
-
-    &:hover,
-    &:visited,
-    &:focus-visible {
-      color: #fff;
+  @media (min-width: 992px) {
+    .header-navbar-inner {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+      align-items: center;
+      column-gap: 1rem;
     }
 
-    #camel-logo {
-      width: 40px;
-      height: auto;
-      max-height: 40px;
-      border-radius: 20px;
-      margin-right: 0.35rem;
-      vertical-align: text-top;
+    .header-navbar-start {
+      justify-self: start;
     }
-  }
 
-  .navbar-nav.nav-pills {
-    .nav-link {
-      color: #fff;
-      transition:
-        background-color 0.15s ease,
-        color 0.15s ease;
+    .header-navbar-center {
+      justify-self: center;
+      display: flex !important;
+      justify-content: center;
+    }
 
-      &:hover:not(.active),
-      &:focus:not(.active) {
-        background-color: rgba(255, 255, 255, 0.14);
-        color: #fff;
-      }
-
-      &:focus-visible {
-        outline: 2px solid rgba(255, 255, 255, 0.45);
-        outline-offset: 2px;
-      }
-
-      &.active {
-        background-color: colors.$heading-color-secondary;
-        color: #fff;
-      }
-
-      &.active:hover {
-        background-color: colors.$heading-color-secondary;
-        color: #fff;
-      }
+    .camelbird-navbar-right {
+      position: static;
+      justify-self: end;
+      top: auto;
+      right: auto;
     }
   }
 
-  .camelbird-navbar-right {
-    position: absolute;
-    right: 10px;
-    top: 15px;
-
-    a {
-      display: inline-block;
-      margin: 0 8px;
-      color: inherit;
-      text-decoration: none;
-
-      .navbar-social-icon {
-        display: inline-block;
-        color: rgba(255, 255, 255, 0.95);
-        transition: color 0.15s ease;
-      }
-
-      &:hover .navbar-social-icon,
-      &:focus-visible .navbar-social-icon {
-        color: colors.$heading-color-secondary;
-      }
-
-      &:focus-visible {
-        outline: 2px solid colors.$heading-color-secondary;
-        outline-offset: 3px;
-        border-radius: 2px;
-      }
-    }
-
-    .navbar-social-icon {
-      font-size: 1.5rem;
-      line-height: 1;
-      vertical-align: middle;
+  @media (max-width: 991.98px) {
+    .header-navbar-center .navbar-nav {
+      align-items: center;
+      text-align: center;
     }
   }
 }

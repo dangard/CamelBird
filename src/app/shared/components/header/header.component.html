@@ -1,39 +1,41 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
-    <div class="container-fluid">
-        <button
-            class="navbar-toggler"
-            type="button"
-            (click)="toggleNav()"
-            [attr.aria-expanded]="!navCollapsed"
-            aria-controls="navbarSupportedContent"
-            aria-label="Toggle navigation"
-        >
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <a
-            class="navbar-brand me-auto text-white"
-            href="#"
-            routerLink="/camelbird"
-            routerLinkActive="active"
-            (click)="closeNav()"
-        >
-            <img
-                class="d-inline-block align-text-top"
-                id="camel-logo"
-                src="assets/images/zflyingcamel.gif"
-                width="40"
-                height="40"
-                alt=""
-            />
-            {{ title }}.com
-        </a>
+    <div class="container-fluid header-navbar-inner">
+        <div class="header-navbar-start">
+            <button
+                class="navbar-toggler"
+                type="button"
+                (click)="toggleNav()"
+                [attr.aria-expanded]="!navCollapsed"
+                aria-controls="navbarSupportedContent"
+                aria-label="Toggle navigation"
+            >
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <a
+                class="navbar-brand text-white"
+                href="#"
+                routerLink="/camelbird"
+                routerLinkActive="active"
+                (click)="closeNav()"
+            >
+                <img
+                    class="d-inline-block align-text-top"
+                    id="camel-logo"
+                    src="assets/images/zflyingcamel.gif"
+                    width="40"
+                    height="40"
+                    alt=""
+                />
+                {{ title }}.com
+            </a>
+        </div>
         <div
-            class="navbar-collapse collapse"
+            class="navbar-collapse collapse header-navbar-center"
             [class.show]="!navCollapsed"
             id="navbarSupportedContent"
         >
             <ul
-                class="navbar-nav nav-pills mx-auto mb-2 mb-lg-0 gap-1 align-items-lg-center"
+                class="navbar-nav nav-pills mb-2 mb-lg-0 gap-1 align-items-lg-center"
             >
                 <li class="nav-item">
                     <a

@@ -1,0 +1,77 @@
+@use "./colors" as colors;
+
+nav.navbar {
+  a:hover {
+    font-weight: normal;
+  }
+
+  .navbar-brand {
+    text-decoration: none;
+
+    #camel-logo {
+      width: 40px;
+      height: auto;
+      max-height: 40px;
+      border-radius: 20px;
+      margin-right: 0.35rem;
+      vertical-align: text-top;
+    }
+  }
+
+  .navbar-nav.nav-pills .nav-link {
+    color: #fff;
+    transition:
+      background-color 0.15s ease,
+      color 0.15s ease;
+
+    &:hover:not(.active),
+    &:focus:not(.active) {
+      background-color: rgba(255, 255, 255, 0.14);
+      color: #fff;
+    }
+
+    &:focus-visible {
+      outline: 2px solid rgba(255, 255, 255, 0.45);
+      outline-offset: 2px;
+    }
+
+    &.active,
+    &.active:hover {
+      background-color: colors.$heading-color-secondary;
+      color: #fff;
+    }
+  }
+
+  .camelbird-navbar-right {
+    position: absolute;
+    right: 10px;
+    top: 15px;
+
+    a {
+      display: inline-block;
+      margin: 0 8px;
+      color: inherit;
+      text-decoration: none;
+
+      &:focus-visible {
+        outline: 2px solid colors.$heading-color-secondary;
+        outline-offset: 3px;
+        border-radius: 2px;
+      }
+    }
+
+    .navbar-social-icon {
+      display: inline-block;
+      font-size: 1.5rem;
+      line-height: 1;
+      vertical-align: middle;
+      color: rgba(255, 255, 255, 0.95);
+      transition: color 0.15s ease;
+    }
+
+    a:hover .navbar-social-icon,
+    a:focus-visible .navbar-social-icon {
+      color: colors.$heading-color-secondary;
+    }
+  }
+}
