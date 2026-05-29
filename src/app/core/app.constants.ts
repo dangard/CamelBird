@@ -5,5 +5,8 @@ export const APP_CONSTANTS = {
             GET: "/devlog",
             CREATE: "/devlog",
         },
+        CONTACT: {
+            CREATE: "/contact",
+        },
     },
 } as const;

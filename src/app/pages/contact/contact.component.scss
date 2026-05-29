@@ -1,0 +1,10 @@
+@use "../../../styles/colors" as colors;
+
+.contact-hero {
+    background-color: colors.$dark;
+    margin: 0 0 1.5rem;
+}
+
+.contact-container {
+    margin-bottom: 60px;
+}
