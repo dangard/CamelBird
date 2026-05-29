@@ -11,7 +11,9 @@
     [loading]="loading"
     [errorMessage]="errorMessage"
     [isEmpty]="!loading && !errorMessage && devlogs.length === 0"
-    emptyMessage="No devlog entries yet."
+    emptyMessage="No devlog entries yet. Create one to publish updates on the site."
+    [emptyActionLabel]="canCreate ? 'Create devlog' : null"
+    (emptyAction)="openCreateModal()"
 >
     <div
         class="list-group mb-3"

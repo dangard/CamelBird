@@ -1,3 +1,12 @@
 :host {
-  display: block;
+    display: block;
+}
+
+.empty-state {
+    background-color: var(--bs-light, #f8f9fa);
+    color: var(--bs-secondary-color, #6c757d);
+}
+
+.empty-state__message {
+    font-size: 1rem;
 }

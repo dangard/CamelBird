@@ -4,8 +4,17 @@
 </div>
 <div
     *ngIf="!loading && !errorMessage && isEmpty"
-    class="alert alert-light border"
+    class="empty-state text-center py-5 px-3 border rounded"
+    role="status"
 >
-    {{ emptyMessage }}
+    <p class="empty-state__message mb-0">{{ emptyMessage }}</p>
+    <button
+        type="button"
+        class="btn btn-primary btn-sm mt-3"
+        *ngIf="emptyActionLabel"
+        (click)="emptyAction.emit()"
+    >
+        {{ emptyActionLabel }}
+    </button>
 </div>
 <ng-content></ng-content>

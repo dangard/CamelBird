@@ -1,5 +1,5 @@
 import { NgIf } from "@angular/common";
-import { Component, Input } from "@angular/core";
+import { Component, EventEmitter, Input, Output } from "@angular/core";
 
 @Component({
     selector: "app-crud-list-panel",
@@ -12,5 +12,8 @@ export class CrudListPanelComponent {
     @Input() loading = false;
     @Input() errorMessage: string | null = null;
     @Input() emptyMessage = "No records yet.";
+    @Input() emptyActionLabel: string | null = null;
     @Input() isEmpty = false;
+
+    @Output() emptyAction = new EventEmitter<void>();
 }
