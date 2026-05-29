@@ -28,7 +28,27 @@ This generates the development environment (API URL from `.env.development`, typ
 | `npm run build:local` | local Apache / `*.camelbird.local` | `.env.development` → local API |
 | `npm run build` | `https://www.camelbird.com` | `https://api.camelbird.com` |
 
-Copy **`.env.example`** → **`.env`** and optionally **`.env.development`** to override `NG_APP_*` values. See `docs/ARCHITECTURE.md` for details.
+Copy **`.env.example`** → **`.env`** and optionally **`.env.development`** to set **`API_URL`**. See `docs/ARCHITECTURE.md` for details.
+
+Admin entry: footer gear icon → `/admin/login` (requires CamelBird-API JWT auth).
+
+### Local test admin
+
+After running CamelBird-API migration [`001_auth_rbac.sql`](../api.camelbird.com/database/migrations/001_auth_rbac.sql) and seed [`dev_admin_user.sql`](../api.camelbird.com/database/seeds/dev_admin_user.sql):
+
+| Field | Value |
+|-------|-------|
+| Username | `admin` |
+| Password | `changeme` |
+
+Login at `http://localhost:4200/admin/login` (or your local Apache host). Change this password before any shared or production deployment.
+
+Apply the seed (adjust DB credentials to match your `.env`):
+
+```bash
+mysql -u USER -p camelbird_db < ../api.camelbird.com/database/seeds/dev_admin_user.sql
+```
+
 
 ## Running unit tests
 

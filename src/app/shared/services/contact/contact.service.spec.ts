@@ -43,7 +43,7 @@ describe("ContactService", () => {
         });
 
         const req = httpMock.expectOne(
-            environment.apiServerUrl + APP_CONSTANTS.OPERATIONS.CONTACT.CREATE,
+            environment.apiUrl + APP_CONSTANTS.OPERATIONS.CONTACT.CREATE,
         );
         expect(req.request.method).toBe("POST");
         expect(req.request.body).toEqual(payload);

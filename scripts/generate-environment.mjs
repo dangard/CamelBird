@@ -3,7 +3,7 @@
  *
  * Usage: node scripts/generate-environment.mjs <development|production>
  *
- * Public keys (bundled into the SPA): NG_APP_* (see .env.example).
+ * Bundle config: API_URL (see .env.example).
  */
 
 import { writeFileSync, existsSync } from "node:fs";
@@ -28,41 +28,19 @@ if (existsSync(layered)) {
 
 const prod = mode === "production";
 
-/** Defaults when `NG_APP_*` is unset (production vs development mode). */
+/** Defaults when `API_URL` is unset (production vs development mode). */
 const defaults = prod
-    ? {
-          apiServerUrl: "https://api.camelbird.com",
-          enableDevlogCreate: false,
-          enableDevBlog: true,
-          devblogUser: "dangard",
-      }
-    : {
-          apiServerUrl: "http://localhost",
-          enableDevlogCreate: true,
-          enableDevBlog: true,
-          devblogUser: "dangard",
-      };
+    ? { apiUrl: "https://api.camelbird.com" }
+    : { apiUrl: "http://localhost" };
 
 function envString(key, fallback) {
     const v = process.env[key];
     return v !== undefined && v.trim() !== "" ? v.trim() : fallback;
 }
 
-function envBool(key, fallback) {
-    const v = process.env[key];
-    if (v === undefined || v.trim() === "") return fallback;
-    return /^true|1|yes$/i.test(v.trim());
-}
-
 const environment = {
     production: prod,
-    apiServerUrl: envString("NG_APP_API_SERVER_URL", defaults.apiServerUrl),
-    enableDevlogCreate: envBool(
-        "NG_APP_ENABLE_DEVLOG_CREATE",
-        defaults.enableDevlogCreate,
-    ),
-    enableDevBlog: envBool("NG_APP_ENABLE_DEV_BLOG", defaults.enableDevBlog),
-    devblogUser: envString("NG_APP_DEVBLOG_USER", defaults.devblogUser),
+    apiUrl: envString("API_URL", defaults.apiUrl),
 };
 
 const outfile = resolve(root, "src/environments/environment.generated.ts");

@@ -1,0 +1,6 @@
+<h1 class="h3 mb-3">Admin dashboard</h1>
+<p class="lead">This is the admin page.</p>
+<p *ngIf="auth.currentUser$ | async as user" class="text-muted">
+    You are signed in with role <strong>{{ user.role }}</strong
+    >. Use the navigation on the right to manage users and devlogs.
+</p>

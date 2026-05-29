@@ -1,0 +1,143 @@
+<h1 class="h3 mb-3">Devlogs</h1>
+
+<app-crud-list-panel
+    [loading]="loading"
+    [errorMessage]="errorMessage"
+    [isEmpty]="!loading && !errorMessage && devlogs.length === 0"
+    emptyMessage="No devlog entries yet."
+>
+    <div
+        class="list-group mb-3"
+        *ngIf="!loading && !errorMessage && devlogs.length"
+    >
+        <div class="list-group-item" *ngFor="let entry of devlogs">
+            <div class="d-flex justify-content-between align-items-start gap-2">
+                <div>
+                    <h2 class="h6 mb-1">{{ entry.title }}</h2>
+                    <p class="small text-muted mb-1">
+                        {{ entry.date }} · {{ entry.user }}
+                        <span
+                            class="badge bg-warning text-dark ms-1"
+                            *ngIf="entry.is_published === false"
+                            >Unpublished</span
+                        >
+                    </p>
+                    <p class="mb-0 small">{{ entry.body }}</p>
+                </div>
+                <div class="text-nowrap" *ngIf="canPatch || canDelete">
+                    <button
+                        type="button"
+                        class="btn btn-link btn-sm p-0 me-2"
+                        *ngIf="canPatch"
+                        (click)="startEdit(entry)"
+                    >
+                        Edit
+                    </button>
+                    <button
+                        type="button"
+                        class="btn btn-link btn-sm p-0 text-danger"
+                        *ngIf="canDelete"
+                        (click)="deleteDevlog(entry)"
+                        [disabled]="submitting"
+                    >
+                        Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</app-crud-list-panel>
+
+<div class="alert alert-danger" *ngIf="formError">{{ formError }}</div>
+
+<div class="card shadow-sm mb-4" *ngIf="canCreate">
+    <div class="card-header">Create devlog</div>
+    <div class="card-body">
+        <form [formGroup]="createForm" (ngSubmit)="createDevlog()">
+            <div class="mb-2">
+                <label class="form-label" for="devlog-title">Title</label>
+                <input
+                    id="devlog-title"
+                    class="form-control"
+                    formControlName="title"
+                />
+            </div>
+            <div class="mb-2">
+                <label class="form-label" for="devlog-body">Body</label>
+                <textarea
+                    id="devlog-body"
+                    class="form-control"
+                    rows="4"
+                    formControlName="body"
+                ></textarea>
+            </div>
+            <div class="mb-2">
+                <label class="form-label" for="devlog-user">Author</label>
+                <input
+                    id="devlog-user"
+                    class="form-control"
+                    formControlName="user"
+                />
+            </div>
+            <button
+                type="submit"
+                class="btn btn-primary"
+                [disabled]="createForm.invalid || submitting"
+            >
+                Create
+            </button>
+        </form>
+    </div>
+</div>
+
+<div class="card shadow-sm" *ngIf="editingId && canPatch">
+    <div class="card-header">Edit devlog</div>
+    <div class="card-body">
+        <form [formGroup]="editForm" (ngSubmit)="saveEdit()">
+            <div class="mb-2">
+                <label class="form-label" for="edit-title">Title</label>
+                <input
+                    id="edit-title"
+                    class="form-control"
+                    formControlName="title"
+                />
+            </div>
+            <div class="mb-2">
+                <label class="form-label" for="edit-body">Body</label>
+                <textarea
+                    id="edit-body"
+                    class="form-control"
+                    rows="4"
+                    formControlName="body"
+                ></textarea>
+            </div>
+            <div class="form-check mb-2">
+                <input
+                    id="edit-published"
+                    class="form-check-input"
+                    type="checkbox"
+                    formControlName="is_published"
+                />
+                <label class="form-check-label" for="edit-published"
+                    >Published</label
+                >
+            </div>
+            <div class="d-flex gap-2">
+                <button
+                    type="submit"
+                    class="btn btn-primary"
+                    [disabled]="editForm.invalid || submitting"
+                >
+                    Save
+                </button>
+                <button
+                    type="button"
+                    class="btn btn-outline-secondary"
+                    (click)="cancelEdit()"
+                >
+                    Cancel
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

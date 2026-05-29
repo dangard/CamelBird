@@ -1,0 +1,61 @@
+<div class="container py-4 admin-shell">
+    <div class="row g-4">
+        <div class="col-12 col-lg-8 order-1 order-lg-1">
+            <router-outlet></router-outlet>
+        </div>
+        <aside class="col-12 col-lg-4 order-2 order-lg-2">
+            <nav
+                class="admin-shell__nav card shadow-sm"
+                aria-label="Admin navigation"
+            >
+                <div class="card-body">
+                    <p
+                        class="text-muted small mb-2"
+                        *ngIf="auth.currentUser$ | async as user"
+                    >
+                        Signed in as
+                        <strong>{{ user.username || user.email }}</strong>
+                        <span class="badge bg-secondary ms-1">{{
+                            user.role
+                        }}</span>
+                    </p>
+                    <ul class="nav flex-column gap-1">
+                        <li class="nav-item">
+                            <a
+                                class="nav-link"
+                                routerLink="{{ routes.DASHBOARD }}"
+                                routerLinkActive="active"
+                                >Dashboard</a
+                            >
+                        </li>
+                        <li class="nav-item">
+                            <a
+                                class="nav-link"
+                                routerLink="{{ routes.USERS }}"
+                                routerLinkActive="active"
+                                >Users</a
+                            >
+                        </li>
+                        <li class="nav-item">
+                            <a
+                                class="nav-link"
+                                routerLink="{{ routes.DEVLOGS }}"
+                                routerLinkActive="active"
+                                >Devlogs</a
+                            >
+                        </li>
+                        <li class="nav-item mt-2">
+                            <button
+                                type="button"
+                                class="btn btn-outline-secondary btn-sm w-100"
+                                (click)="signOut()"
+                            >
+                                Sign out
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </aside>
+    </div>
+</div>

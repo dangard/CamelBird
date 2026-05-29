@@ -1,0 +1,11 @@
+<div *ngIf="loading" class="alert alert-secondary" role="status">Loading…</div>
+<div *ngIf="errorMessage" class="alert alert-danger" role="alert">
+    {{ errorMessage }}
+</div>
+<div
+    *ngIf="!loading && !errorMessage && isEmpty"
+    class="alert alert-light border"
+>
+    {{ emptyMessage }}
+</div>
+<ng-content></ng-content>

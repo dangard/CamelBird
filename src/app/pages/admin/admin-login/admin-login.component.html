@@ -1,0 +1,35 @@
+<div class="container py-5" style="max-width: 28rem">
+    <h1 class="h3 mb-3">Admin sign in</h1>
+    <form [formGroup]="form" (ngSubmit)="submit()">
+        <div class="mb-3">
+            <label class="form-label" for="username">Username or email</label>
+            <input
+                id="username"
+                class="form-control"
+                type="text"
+                formControlName="username"
+                autocomplete="username"
+            />
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="password">Password</label>
+            <input
+                id="password"
+                class="form-control"
+                type="password"
+                formControlName="password"
+                autocomplete="current-password"
+            />
+        </div>
+        <div *ngIf="submitError" class="alert alert-danger" role="alert">
+            {{ submitError }}
+        </div>
+        <button
+            class="btn btn-primary w-100"
+            type="submit"
+            [disabled]="form.invalid || submitting"
+        >
+            {{ submitting ? "Signing in…" : "Sign in" }}
+        </button>
+    </form>
+</div>

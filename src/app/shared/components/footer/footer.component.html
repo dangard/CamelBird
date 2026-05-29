@@ -1,4 +1,14 @@
 <!-- Footer -->
 <div class="footer-container container-fluid bg-light fixed-bottom">
-    <footer>Copyright © 2000-{{ year }} Daniel Gardner</footer>
+    <footer class="footer-inner">
+        <span>Copyright © 2000-{{ year }} Daniel Gardner</span>
+        <a
+            routerLink="/admin/login"
+            class="footer-admin-link"
+            aria-label="Admin"
+            title="Admin"
+        >
+            <i class="bi bi-gear" aria-hidden="true"></i>
+        </a>
+    </footer>
 </div>

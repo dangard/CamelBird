@@ -1,11 +1,8 @@
 import { HttpErrorResponse } from "@angular/common/http";
-import { DestroyRef, inject, Component, OnInit } from "@angular/core";
-import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { filter } from "rxjs";
-
+import { inject, Component, OnInit } from "@angular/core";
 import { LoggerService } from "../../../core/logger.service";
 import { DevblogService } from "../../services/devblog/devblog.service";
-import { EventListenerService } from "../../services/common/event-listener.service";
+import type { DevlogPublic } from "../../models/devblog-api.types";
 
 import { format, isValid, parseISO } from "date-fns";
 import { NgIf, NgFor } from "@angular/common";
@@ -18,41 +15,20 @@ import { NgIf, NgFor } from "@angular/common";
     imports: [NgIf, NgFor],
 })
 export class DevblogListComponent implements OnInit {
-    private readonly destroyRef = inject(DestroyRef);
     private readonly logger = inject(LoggerService);
 
-    devBlogs: any;
-    selectedDevBlog: any;
+    devBlogs: DevlogPublic[] = [];
+    selectedDevBlog: DevlogPublic | null = null;
     errorMessage: string | null = null;
     loading = true;
 
-    constructor(
-        public dataService: DevblogService,
-        private eventListenerService: EventListenerService,
-    ) {
-        this.eventListenerService.events$
-            .pipe(
-                filter((e) => e.domain === "devblog" && e.type === "created"),
-                takeUntilDestroyed(this.destroyRef),
-            )
-            .subscribe({
-                next: () => this.getGetDevBlogs(),
-                error: (error: unknown) => {
-                    const message =
-                        error instanceof Error ? error.message : String(error);
-                    this.errorMessage = message;
-                    this.logger.error("Dev blog event stream error", {
-                        message,
-                    });
-                },
-            });
-    }
+    constructor(public dataService: DevblogService) {}
 
     ngOnInit() {
-        this.getGetDevBlogs();
+        this.loadDevBlogs();
     }
 
-    private getGetDevBlogs() {
+    private loadDevBlogs() {
         this.loading = true;
         this.errorMessage = null;
         this.dataService.getDevBlogs().subscribe({
@@ -86,7 +62,7 @@ export class DevblogListComponent implements OnInit {
         return isValid(d) ? format(d, "EEE, MMM do yyyy") : date;
     }
 
-    public selectDevBlog(devBlog: any) {
+    public selectDevBlog(devBlog: DevlogPublic) {
         this.selectedDevBlog = devBlog;
     }
 }

@@ -8,6 +8,8 @@
 
 **Input**: User description: "Add an Admin Screen requiring login. This takes you to an Admin Dashboard. Admin Dashboard has two sub pages: User CRUD and Devlog CRUD. API calls should be secured via JWT (including renewal via JWT refresh where the backend supports it). Link to admin via a gear icon at the right end of the footer."
 
+**API implementation plan** (backend, separate repo): `E:\Sites\api.camelbird.com\specs\001-admin-auth-rbac\plan.md`. **SPA implementation plan**: Cursor plan `admin_dashboard_auth` (SPA-only).
+
 **Alignment (CamelBird-API plan)**: (**1**) **Single `users` model** — every account requires a password; (**2**) **Standard verbs** — `GET`/`POST`/`PATCH`/`DELETE` on plural `/users` and `/devlogs` (no RPC-style deactivate URLs); (**3**) **Roles** — **Admin**, **Read Only** (`read_only`), **Maintainer** (`maintainer`: **GET + PATCH** only—no **POST**/**DELETE**); (**4**) **Public devlog read** — visitor-facing devlog use stays **unauthenticated** (**FR-023**); **`GET /devlogs`** (or equivalent public contract) remains available **without** login for the **narrow public projection** while staff admin uses authenticated verbs; (**5**) **Email uniqueness** — each staff **email** is globally unique (**FR-024**), enforced by the API and reflected in admin create/update flows.
 
 ## User Scenarios & Testing *(mandatory)*
