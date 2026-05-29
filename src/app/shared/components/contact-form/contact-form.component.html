@@ -1,0 +1,151 @@
+<div class="contact-form container-fluid shadow-sm mb-4">
+    <div class="row-fluid">
+        <div
+            class="col-12 contact-form__banner text-center py-2 fw-semibold rounded-top"
+        >
+            Send a Message
+        </div>
+    </div>
+    <div *ngIf="submitError" class="alert alert-danger m-2" role="alert">
+        {{ submitError }}
+    </div>
+    <div class="row-fluid m-2" [hidden]="submitted">
+        <form [formGroup]="contactForm" (ngSubmit)="sendContact()">
+            <div class="form-row pb-3">
+                <label for="subject"><strong>Subject</strong></label>
+                <select
+                    id="subject"
+                    name="subject"
+                    class="form-select"
+                    formControlName="subject"
+                    required
+                >
+                    <option *ngFor="let option of subjects" [value]="option">
+                        {{ option }}
+                    </option>
+                </select>
+                <div
+                    *ngIf="
+                        subject.invalid && (subject.dirty || subject.touched)
+                    "
+                    class="alert alert-danger"
+                >
+                    <div *ngIf="subject.errors?.required">
+                        Subject is required.
+                    </div>
+                </div>
+            </div>
+            <div class="form-row pb-3">
+                <label for="name"><strong>Name</strong></label>
+                <input
+                    type="text"
+                    name="name"
+                    class="form-control"
+                    id="name"
+                    aria-describedby="nameHelp"
+                    placeholder="Enter your name"
+                    formControlName="name"
+                    required
+                />
+                <div id="nameHelp" class="form-text text-muted">
+                    How should I address you?
+                </div>
+                <div
+                    *ngIf="name.invalid && (name.dirty || name.touched)"
+                    class="alert alert-danger"
+                >
+                    <div *ngIf="name.errors?.required">Name is required.</div>
+                </div>
+            </div>
+            <div class="form-row pb-3">
+                <label for="email"><strong>Email</strong></label>
+                <input
+                    type="email"
+                    name="email"
+                    class="form-control"
+                    id="email"
+                    aria-describedby="emailHelp"
+                    placeholder="Enter your email address"
+                    formControlName="email"
+                    required
+                />
+                <div id="emailHelp" class="form-text text-muted">
+                    I will use this to reply to you.
+                </div>
+                <div
+                    *ngIf="email.invalid && (email.dirty || email.touched)"
+                    class="alert alert-danger"
+                >
+                    <div *ngIf="email.errors?.required">Email is required.</div>
+                    <div *ngIf="email.errors?.email">
+                        Enter a valid email address.
+                    </div>
+                </div>
+            </div>
+            <div class="form-row pb-3">
+                <label for="message"><strong>Message</strong></label>
+                <textarea
+                    name="message"
+                    class="form-control"
+                    id="message"
+                    aria-describedby="messageHelp"
+                    rows="6"
+                    formControlName="message"
+                    required
+                ></textarea>
+                <div id="messageHelp" class="form-text text-muted">
+                    What would you like to say?
+                </div>
+                <div
+                    *ngIf="
+                        message.invalid && (message.dirty || message.touched)
+                    "
+                    class="alert alert-danger"
+                >
+                    <div *ngIf="message.errors?.required">
+                        Message is required.
+                    </div>
+                </div>
+            </div>
+            <div class="contact-form__honeypot" aria-hidden="true">
+                <label for="website">Website</label>
+                <input
+                    type="text"
+                    id="website"
+                    name="website"
+                    tabindex="-1"
+                    autocomplete="off"
+                    formControlName="website"
+                />
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <button
+                        type="submit"
+                        class="btn btn-primary"
+                        [disabled]="contactForm.invalid"
+                    >
+                        Send Message
+                    </button>
+                </div>
+                <div class="col-6 text-align-right">
+                    <button
+                        type="button"
+                        class="btn btn-info mr-auto"
+                        (click)="resetForm()"
+                    >
+                        Reset
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="submitted-message row m-2" *ngIf="submitted">
+        <div class="col-12 p-2 text-center">
+            <p>Thanks — your message was sent.</p>
+            <button class="btn btn-primary" (click)="resetForm()">
+                Send Another Message
+            </button>
+        </div>
+    </div>
+</div>

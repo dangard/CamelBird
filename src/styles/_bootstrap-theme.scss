@@ -1,0 +1,43 @@
+@use "./colors" as colors;
+
+:root,
+[data-bs-theme="light"] {
+  --bs-primary: #{colors.$primary};
+  --bs-primary-rgb: 139, 119, 101;
+  --bs-info: #{colors.$info};
+  --bs-info-rgb: 67, 58, 50;
+  --bs-dark: #{colors.$dark};
+  --bs-light: #{colors.$surface-lifted};
+}
+
+.btn-primary {
+  --bs-btn-color: #fff;
+  --bs-btn-bg: #{colors.$primary};
+  --bs-btn-border-color: #{colors.$primary};
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: #{colors.$color-primary-3};
+  --bs-btn-hover-border-color: #{colors.$color-primary-3};
+  --bs-btn-focus-shadow-rgb: 139, 119, 101;
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: #{colors.$color-primary-3};
+  --bs-btn-active-border-color: #{colors.$color-primary-3};
+  --bs-btn-disabled-color: #fff;
+  --bs-btn-disabled-bg: #{colors.$primary};
+  --bs-btn-disabled-border-color: #{colors.$primary};
+}
+
+.btn-info {
+  --bs-btn-color: #fff;
+  --bs-btn-bg: #{colors.$info};
+  --bs-btn-border-color: #{colors.$info};
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: #{colors.$color-secondary-1-2};
+  --bs-btn-hover-border-color: #{colors.$color-secondary-1-2};
+  --bs-btn-focus-shadow-rgb: 67, 58, 50;
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: #{colors.$color-secondary-1-2};
+  --bs-btn-active-border-color: #{colors.$color-secondary-1-2};
+  --bs-btn-disabled-color: #fff;
+  --bs-btn-disabled-bg: #{colors.$info};
+  --bs-btn-disabled-border-color: #{colors.$info};
+}

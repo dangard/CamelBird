@@ -61,6 +61,12 @@ export class DevblogCreatorComponent implements OnInit {
                     typeof (body as { message: unknown }).message === "string"
                         ? (body as { message: string }).message
                         : null;
+                if (err.status === 0) {
+                    this.submitError =
+                        "We couldn't reach the server. Check your connection and try again.";
+                    return;
+                }
+
                 this.submitError =
                     fromApi ??
                     err.message ??

@@ -12,6 +12,7 @@
     "pretest": "node scripts/generate-environment.mjs development",
     "start": "node scripts/generate-environment.mjs development && ng serve",
     "build": "node scripts/generate-environment.mjs production && ng build",
+    "build:local": "node scripts/generate-environment.mjs development && ng build --configuration development",
     "postbuild": "node scripts/generate-environment.mjs development",
     "watch": "node scripts/generate-environment.mjs development && ng build --watch --configuration development",
     "test": "jest --ci --runInBand",

@@ -5,7 +5,7 @@
 - **Target scope**: `whole-repo` — workspace root `e:\Sites\www.camelbird.com`
 - **Audience mode**: `architecture-review`
 - **Out of scope**: `none`
-- **Last reviewed**: 2026-05-13 — **Source**: live analysis (no git SHA captured)
+- **Last reviewed**: 2026-05-28 — **Source**: live analysis (no git SHA captured)
 - **Output**: `docs/ARCHITECTURE.md`
 
 ### Context from stakeholders
@@ -14,7 +14,7 @@
 
 ## Executive summary
 
-CamelBird is a small **Angular 20 standalone single-page application** for a personal site (accomplishments, interests, dev blog, branding). The build emits a static bundle to **`dist/CamelBird`** (application builder; browser assets at the project output root) and is served by **Apache** using a `.htaccess` that forces HTTPS and routes unknown paths back to `index.html` for client-side routing. The only dynamic feature is a **dev blog** that calls an external REST API; **`environment.apiServerUrl`** and feature flags ship from **`.env` → `environment.generated.ts`** at build/serve time (defaults match `https://api.camelbird.com` for production bundles when unset); that backend is not in this repository. The codebase is small (≈10 components, 2 services, route config in `app.routes.ts`, 1 constants class) with **Jest** unit tests and **local quality gates** (`npm run verify`: `lint`, production `build`, `test`). Application repos intentionally **do not use GitHub Actions**. Remaining architectural watch items include **the UI feature flag (`enableDevlogCreate`) treated as UX-only** (authorization belongs on `api.camelbird.com`). Client-side **logging + HTTP failure interception** and **inline dev-blog errors** are now in place; optional vendor analytics or CSP tightening remains host-dependent—see **`docs/APACHE_CONFIG.md`**.
+CamelBird is a small **Angular 20 standalone single-page application** for a personal site (accomplishments, interests, dev blog, contact, branding). The build emits a static bundle to **`dist/CamelBird`** (application builder; browser assets at the project output root) and is served by **Apache** using a `.htaccess` that forces HTTPS and routes unknown paths back to `index.html` for client-side routing. Dynamic features call an external REST API at **`environment.apiServerUrl`** (dev blog list/create and contact form submit); configuration and feature flags ship from **`.env` → `environment.generated.ts`** at build/serve time (defaults match `https://api.camelbird.com` for production bundles when unset); that backend is not in this repository. The codebase uses **Jest** unit tests and **local quality gates** (`npm run verify`: `lint`, production `build`, `test`). Application repos intentionally **do not use GitHub Actions**. Remaining architectural watch items include **the UI feature flag (`enableDevlogCreate`) treated as UX-only** (authorization belongs on `api.camelbird.com`). Client-side **logging + HTTP failure interception** and **inline form errors** are in place; optional vendor analytics or CSP tightening remains host-dependent—see **`docs/APACHE_CONFIG.md`**.
 
 ## Context
 
@@ -28,16 +28,16 @@ flowchart LR
 
   user -->|HTTPS, route| apache
   apache -->|index.html + bundle| user
-  user -.->|GET /devlogs, POST /devlog| api
+  user -.->|GET /devlogs, POST /devlog, POST /contact| api
 ```
 
 - **End users** load the static SPA from Apache and interact entirely in the browser.
-- **`api.camelbird.com`** is an external service owned outside this repo; only the dev blog feature talks to it.
+- **`api.camelbird.com`** is an external service owned outside this repo; the dev blog and contact form talk to it.
 - **No SSO, identity provider, CDN, or analytics** is observed in the repository.
 
 ## Goals and constraints
 
-- **Goal (inferred from code/routes)**: present static personal-site content (`accomplishments`, `interests`, `camelbird`) plus a dynamic `devblog` view.
+- **Goal (inferred from code/routes)**: present static personal-site content (`accomplishments`, `interests`, `camelbird`, `contact`) plus a dynamic `devblog` view.
 - **Build constraints (`angular.json`)**:
   - Production budgets: initial bundle warning **1mb** / error **1.25mb**; per-component-style warning 2kb / error 4kb.
   - **Strict mode enabled** at the Angular project level.
@@ -47,7 +47,7 @@ flowchart LR
 
 ## High-level architecture
 
-Standalone bootstrap, application routes, one feature service. Two distinct slices: static pages (no I/O) and the dev blog (HTTP + intra-app pub/sub).
+Standalone bootstrap, application routes, feature services. Three slices: static pages (no I/O), dev blog (HTTP + intra-app pub/sub), and contact form (HTTP POST).
 
 ```mermaid
 flowchart TB
@@ -60,16 +60,19 @@ flowchart TB
       inter[InterestsComponent]
       cb[CamelbirdComponent]
       blog[DevblogComponent]
+      contact[ContactComponent]
     end
     subgraph shared [Shared components]
       header[HeaderComponent]
       footer[FooterComponent]
       list[DevblogListComponent]
       creator[DevblogCreatorComponent]
+      contactForm[ContactFormComponent]
       face[FaceOffCritiqueComponent]
     end
     subgraph svcs [Services]
       devsvc[DevblogService]
+      contactsvc[ContactService]
       evtsvc[EventListenerService]
       constants[AppConstants]
     end
@@ -79,10 +82,14 @@ flowchart TB
     pages --> shared
     list --> devsvc
     creator --> devsvc
+    contact --> contactForm
+    contactForm --> contactsvc
     devsvc --> evtsvc
     list --> evtsvc
     devsvc --> constants
+    contactsvc --> constants
     devsvc --> env
+    contactsvc --> env
     header --> env
     blog --> env
   end
@@ -90,6 +97,7 @@ flowchart TB
   apache[Apache: www.camelbird.com]
   api[api.camelbird.com]
   devsvc -->|HttpClient: GET /devlogs, POST /devlog| api
+  contactsvc -->|HttpClient: POST /contact| api
   apache -->|serves bundle + index.html fallback| spa
 ```
 
@@ -129,9 +137,9 @@ sequenceDiagram
 ### Routing and shell
 
 - **`main.ts`** calls `bootstrapApplication(AppComponent, …)` with `provideRouter(routes)`, **`provideHttpClient(withFetch(), withInterceptors([httpErrorInterceptor]))`**.
-- **`app.routes.ts`** declares 4 routes plus a default redirect:
+- **`app.routes.ts`** declares 5 routes plus a default redirect:
   - `''` → redirect `/accomplishments`
-  - `accomplishments`, `interests`, `devblog`, `camelbird`
+  - `accomplishments`, `interests`, `devblog`, `camelbird`, `contact`
 - **Routed/feature components** are **`standalone: true`**; there is no `AppModule`.
 - **`AppComponent`** holds layout (header + `RouterOutlet` + footer); footer year computed from `new Date()`.
 - **`HeaderComponent`** reads `environment.enableDevBlog` to decide whether the dev blog nav link is shown.
@@ -139,7 +147,8 @@ sequenceDiagram
 
 ### Pages
 
-- **`AccomplishmentsComponent`, `InterestsComponent`, `CamelbirdComponent`** — static content, no inputs or services.
+- **`AccomplishmentsComponent`, `InterestsComponent`, `CamelbirdComponent`** — static content; Accomplishments links to `/contact?subject=resume-request` instead of a mailto address.
+- **`ContactComponent`** — contact page shell with breadcrumb/hero layout; embeds **`ContactFormComponent`**.
 - **`DevblogComponent`** — wraps the dev blog feature; reads `environment.enableDevlogCreate` to enable/disable the creator UI.
 
 ### Dev blog feature
@@ -154,6 +163,15 @@ sequenceDiagram
     - `POST {apiServerUrl}/devlog` → `{ log_id }`
 - **`EventListenerService`** — typed in-app events: `Subject<CamelBirdAppEvent>` exposed as `events$`, `emit(...)`. Payloads are a discriminated union (`src/app/shared/models/app-events.types.ts`); extend the union as new domains appear.
 - **`AppConstants`** — injectable REST path fragments (`OPERATIONS`); no runtime env reads.
+
+### Contact feature
+
+- **`ContactFormComponent`** — reactive form with subject dropdown (`Resume Request`, `General Question`, `Saying Hello`), name, email, message, and a hidden honeypot field (`website`). Reads optional `?subject=resume-request` query param on init. Surfaces **`submitError`** inline, including friendly copy for HTTP **429** rate-limit responses.
+- **`ContactService`** (`providedIn: 'root'`) — POST gateway for contact submissions.
+  - **Signatures**: typed payloads via `src/app/shared/models/contact-api.types.ts` — `sendContact(...): Observable<ContactResponse>`.
+  - **API contract observed**:
+    - `POST {apiServerUrl}/contact` → `{ message }` on success
+- **Backend (external `api.camelbird.com`)**: validates input, applies honeypot silent-success and IP rate limiting, sends mail via **PHPMailer/SMTP** (`CONTACT_SMTP_*` env vars). CORS allowlist includes `https://www.camelbird.com`.
 
 ### Client observability
 
@@ -170,9 +188,9 @@ sequenceDiagram
 
 ## Data architecture
 
-- **Client-side**: No local persistence (no `localStorage`, no NgRx, no service-worker cache). All dev-blog data is fetched per page load via `HttpClient`.
+- **Client-side**: No local persistence (no `localStorage`, no NgRx, no service-worker cache). Dev-blog data is fetched per page load; contact submissions are fire-and-forget POSTs.
 - **Server-side**: Owned by the **external** `api.camelbird.com`; schema and retention not visible in this repository.
-- **PII**: The only user-identifying value in the client is the hard-coded string `"dangard"` passed as `user` when creating a dev log. Anything else PII-related would live server-side.
+- **PII**: Contact form collects submitter name and email for API delivery. Dev log create still passes hard-coded `"dangard"` as `user`. Anything else PII-related lives server-side.
 
 ## Security and trust
 
@@ -194,16 +212,17 @@ sequenceDiagram
 - **Build artifacts**: `dist/CamelBird` (production, with `outputHashing: "all"`; application builder with `outputPath.browser` empty so static files land at this root — same deploy path as before the `browser/` subfolder default).
 - **Environments**: only `development` and `production` configurations; no staging configuration in `angular.json`.
 - **Health checks, observability, SLOs**: No uptime vendor or analytics in-repo; **`LoggerService`** centralizes browser-console logging hooks and **`httpErrorInterceptor`** records failed HTTP calls for troubleshooting.
-- **Error handling**: Dev blog **list** and **creator** surfaces show **`alert-danger`** inline messages on failure; **`LoggerService`** captures structured context alongside interceptor logs.
+- **Error handling**: Dev blog **list** and **creator**, plus the **contact form**, surface **`alert-danger`** inline messages on failure; **`LoggerService`** captures structured context alongside interceptor logs.
 
 ## Development workflow
 
 - **Run locally**: `npm start` → regenerates **development** `environment.generated.ts` then `ng serve` on **`http://localhost:4200/`**. Copy **`.env.example`** → **`.env`** and set **`NG_APP_*`** (optional layered **`.env.development`** overrides **`.env`**).
-- **Build**: `npm run build` → generates **production** `environment.generated.ts` then **`ng build`** (`defaultConfiguration`: **production`).
+- **Build (production)**: `npm run build` → generates **production** `environment.generated.ts` then **`ng build`** (`defaultConfiguration`: **production**). Targets **`https://api.camelbird.com`** for DreamHost deploy.
+- **Build (local Apache)**: `npm run build:local` → generates **development** `environment.generated.ts` then **`ng build --configuration development`**. Use when serving the SPA from **`*.camelbird.local`** so API calls hit **`https://api.camelbird.local`** (production API CORS does not allow `.local` origins).
 - **Watch**: `npm run watch` → `ng build --watch --configuration development`.
 - **Lint**: `npm run lint` → `tsc --noEmit && eslint . --ext js,ts,json,html --quiet --fix` (config: `.eslintrc.json` with `@angular-eslint/recommended`).
 - **Test**: `npm test` → **`jest --ci --runInBand`** (`jest.config.cjs`, `setup-jest.ts` with zone test env from `jest-preset-angular`).
-- **Tests present**: spec files for routed/shared components, **`DevblogService`**, **`EventListenerService`**, and **`LoggerService`** (`*.component.spec.ts`, `*.service.spec.ts`).
+- **Tests present**: spec files for routed/shared components, **`DevblogService`**, **`ContactService`**, **`EventListenerService`**, and **`LoggerService`** (`*.component.spec.ts`, `*.service.spec.ts`).
 - **Verify (local)**: `npm run verify` — Node 20 (`.nvmrc`), **`prepare`** writes **development** `environment.generated.ts` for lint/tests, lint, Jest, then **`npm run build`** (production env generation + **`ng build`**). No GitHub Actions or hosted CI.
 - **IaC**: **None** (no Terraform, Pulumi, Bicep, CloudFormation, K8s manifests).
 - **Local-dev tooling**: ESLint + Prettier + TypeScript strict; `.editorconfig`, `.nvmrc` (Node 20), `.gitattributes` (line endings).
