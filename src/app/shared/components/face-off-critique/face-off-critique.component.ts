@@ -1,8 +1,10 @@
+import { TitleCasePipe } from "@angular/common";
 import { Component, OnInit } from "@angular/core";
 
 @Component({
     selector: "app-face-off-critique",
     standalone: true,
+    imports: [TitleCasePipe],
     templateUrl: "./face-off-critique.component.html",
     styleUrls: ["./face-off-critique.component.scss"],
 })

@@ -1,0 +1,217 @@
+<app-admin-page-header
+    title="Users"
+    createLabel="Create user"
+    [showCreate]="canCreate"
+    (create)="openCreateModal()"
+/>
+
+<div class="alert alert-danger" *ngIf="actionError">{{ actionError }}</div>
+
+<app-crud-list-panel
+    [loading]="loading"
+    [errorMessage]="errorMessage"
+    [isEmpty]="!loading && !errorMessage && users.length === 0"
+    emptyMessage="No users found."
+>
+    <div
+        class="table-responsive"
+        *ngIf="!loading && !errorMessage && users.length"
+    >
+        <table class="table table-sm align-middle">
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Active</th>
+                    <th *ngIf="canPatch || canDelete"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let user of users">
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.role }}</td>
+                    <td>{{ user.is_active ? "Yes" : "No" }}</td>
+                    <td *ngIf="canPatch || canDelete" class="text-nowrap">
+                        <button
+                            type="button"
+                            class="btn btn-link btn-sm p-0 me-2"
+                            *ngIf="canPatch"
+                            (click)="openEditModal(user)"
+                        >
+                            Edit
+                        </button>
+                        <button
+                            type="button"
+                            class="btn btn-link btn-sm p-0 text-danger me-2"
+                            *ngIf="canPatch && user.is_active"
+                            (click)="deactivate(user)"
+                            [disabled]="submitting"
+                        >
+                            Deactivate
+                        </button>
+                        <button
+                            type="button"
+                            class="btn btn-link btn-sm p-0 text-danger"
+                            *ngIf="canDelete"
+                            (click)="deleteUser(user)"
+                            [disabled]="submitting"
+                        >
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</app-crud-list-panel>
+
+<div [formGroup]="createForm">
+    <app-admin-form-modal
+        [open]="createModalOpen"
+        title="Create user"
+        titleId="create-user-title"
+        submitLabel="Create"
+        [formError]="createFormError"
+        [submitDisabled]="createForm.invalid || submitting"
+        (closed)="closeCreateModal()"
+        (submitted)="createUser()"
+    >
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label" for="new-username">Username</label>
+                <input
+                    id="new-username"
+                    class="form-control"
+                    formControlName="username"
+                />
+            </div>
+            <div class="col-md-6">
+                <label class="form-label" for="new-email">Email</label>
+                <input
+                    id="new-email"
+                    class="form-control"
+                    formControlName="email"
+                />
+            </div>
+            <div class="col-md-6">
+                <label class="form-label" for="new-password">Password</label>
+                <input
+                    id="new-password"
+                    type="password"
+                    class="form-control"
+                    formControlName="password"
+                />
+            </div>
+            <div class="col-md-6">
+                <label class="form-label" for="new-role">Role</label>
+                <select
+                    id="new-role"
+                    class="form-select"
+                    formControlName="role"
+                >
+                    <option value="admin">admin</option>
+                    <option value="maintainer">maintainer</option>
+                    <option value="read_only">read_only</option>
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label" for="new-first">First name</label>
+                <input
+                    id="new-first"
+                    class="form-control"
+                    formControlName="first_name"
+                />
+            </div>
+            <div class="col-md-6">
+                <label class="form-label" for="new-last">Last name</label>
+                <input
+                    id="new-last"
+                    class="form-control"
+                    formControlName="last_name"
+                />
+            </div>
+        </div>
+    </app-admin-form-modal>
+</div>
+
+<div [formGroup]="editForm">
+    <app-admin-form-modal
+        [open]="editingUser !== null"
+        [title]="'Edit user: ' + (editingUser?.username ?? '')"
+        titleId="edit-user-title"
+        submitLabel="Save"
+        [formError]="editFormError"
+        [submitDisabled]="editForm.invalid || submitting || !editHasChanges"
+        (closed)="closeEditModal()"
+        (submitted)="saveEdit()"
+    >
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label" for="edit-email">Email</label>
+                <input
+                    id="edit-email"
+                    class="form-control"
+                    formControlName="email"
+                />
+            </div>
+            <div class="col-md-6" *ngIf="isAdmin">
+                <label class="form-label" for="edit-password"
+                    >New password</label
+                >
+                <input
+                    id="edit-password"
+                    type="password"
+                    class="form-control"
+                    formControlName="password"
+                    autocomplete="new-password"
+                />
+                <div class="form-text">
+                    Leave blank to keep the current password.
+                </div>
+            </div>
+            <div class="col-md-4" *ngIf="isAdmin">
+                <label class="form-label" for="edit-role">Role</label>
+                <select
+                    id="edit-role"
+                    class="form-select"
+                    formControlName="role"
+                >
+                    <option value="admin">admin</option>
+                    <option value="maintainer">maintainer</option>
+                    <option value="read_only">read_only</option>
+                </select>
+            </div>
+            <div class="col-md-4 d-flex align-items-end" *ngIf="isAdmin">
+                <div class="form-check mb-2">
+                    <input
+                        id="edit-active"
+                        class="form-check-input"
+                        type="checkbox"
+                        formControlName="is_active"
+                    />
+                    <label class="form-check-label" for="edit-active"
+                        >Active</label
+                    >
+                </div>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label" for="edit-first">First name</label>
+                <input
+                    id="edit-first"
+                    class="form-control"
+                    formControlName="first_name"
+                />
+            </div>
+            <div class="col-md-6">
+                <label class="form-label" for="edit-last">Last name</label>
+                <input
+                    id="edit-last"
+                    class="form-control"
+                    formControlName="last_name"
+                />
+            </div>
+        </div>
+    </app-admin-form-modal>
+</div>

@@ -1,5 +1,7 @@
 import { Routes } from "@angular/router";
 
+import { authGuard, guestGuard } from "./core/auth/auth.guard";
+
 export const routes: Routes = [
     { path: "", redirectTo: "/accomplishments", pathMatch: "full" },
     {
@@ -36,6 +38,46 @@ export const routes: Routes = [
             import("./pages/contact/contact.component").then(
                 (m) => m.ContactComponent,
             ),
+    },
+    {
+        path: "admin/login",
+        canActivate: [guestGuard],
+        loadComponent: () =>
+            import("./pages/admin/admin-login/admin-login.component").then(
+                (m) => m.AdminLoginComponent,
+            ),
+    },
+    {
+        path: "admin",
+        canActivate: [authGuard],
+        loadComponent: () =>
+            import("./pages/admin/admin-shell/admin-shell.component").then(
+                (m) => m.AdminShellComponent,
+            ),
+        children: [
+            { path: "", redirectTo: "dashboard", pathMatch: "full" },
+            {
+                path: "dashboard",
+                loadComponent: () =>
+                    import("./pages/admin/admin-dashboard/admin-dashboard.component").then(
+                        (m) => m.AdminDashboardComponent,
+                    ),
+            },
+            {
+                path: "users",
+                loadComponent: () =>
+                    import("./pages/admin/admin-users/admin-users.component").then(
+                        (m) => m.AdminUsersComponent,
+                    ),
+            },
+            {
+                path: "devlogs",
+                loadComponent: () =>
+                    import("./pages/admin/admin-devlogs/admin-devlogs.component").then(
+                        (m) => m.AdminDevlogsComponent,
+                    ),
+            },
+        ],
     },
     {
         path: "**",

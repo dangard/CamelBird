@@ -1,0 +1,139 @@
+<app-admin-page-header
+    title="Devlogs"
+    createLabel="Create devlog"
+    [showCreate]="canCreate"
+    (create)="openCreateModal()"
+/>
+
+<div class="alert alert-danger" *ngIf="actionError">{{ actionError }}</div>
+
+<app-crud-list-panel
+    [loading]="loading"
+    [errorMessage]="errorMessage"
+    [isEmpty]="!loading && !errorMessage && devlogs.length === 0"
+    emptyMessage="No devlog entries yet. Create one to publish updates on the site."
+    [emptyActionLabel]="canCreate ? 'Create devlog' : null"
+    (emptyAction)="openCreateModal()"
+>
+    <div
+        class="list-group mb-3"
+        *ngIf="!loading && !errorMessage && devlogs.length"
+    >
+        <div class="list-group-item" *ngFor="let entry of devlogs">
+            <div class="d-flex justify-content-between align-items-start gap-2">
+                <div>
+                    <h2 class="h6 mb-1">{{ entry.title }}</h2>
+                    <p class="small text-muted mb-1">
+                        {{ entry.date }} · {{ entry.user }}
+                        <span
+                            class="badge bg-warning text-dark ms-1"
+                            *ngIf="entry.is_published === false"
+                            >Unpublished</span
+                        >
+                    </p>
+                    <p class="mb-0 small">{{ entry.body }}</p>
+                </div>
+                <div class="text-nowrap" *ngIf="canPatch || canDelete">
+                    <button
+                        type="button"
+                        class="btn btn-link btn-sm p-0 me-2"
+                        *ngIf="canPatch"
+                        (click)="openEditModal(entry)"
+                    >
+                        Edit
+                    </button>
+                    <button
+                        type="button"
+                        class="btn btn-link btn-sm p-0 text-danger"
+                        *ngIf="canDelete"
+                        (click)="deleteDevlog(entry)"
+                        [disabled]="submitting"
+                    >
+                        Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</app-crud-list-panel>
+
+<div [formGroup]="createForm">
+    <app-admin-form-modal
+        [open]="createModalOpen"
+        title="Create devlog"
+        titleId="create-devlog-title"
+        submitLabel="Create"
+        [formError]="createFormError"
+        [submitDisabled]="createForm.invalid || submitting"
+        (closed)="closeCreateModal()"
+        (submitted)="createDevlog()"
+    >
+        <div class="mb-3">
+            <label class="form-label" for="devlog-title">Title</label>
+            <input
+                id="devlog-title"
+                class="form-control"
+                formControlName="title"
+            />
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="devlog-body">Body</label>
+            <textarea
+                id="devlog-body"
+                class="form-control"
+                rows="6"
+                formControlName="body"
+            ></textarea>
+        </div>
+        <div class="mb-0">
+            <label class="form-label" for="devlog-user">Author</label>
+            <input
+                id="devlog-user"
+                class="form-control"
+                formControlName="user"
+            />
+        </div>
+    </app-admin-form-modal>
+</div>
+
+<div [formGroup]="editForm">
+    <app-admin-form-modal
+        [open]="editingEntry !== null"
+        [title]="'Edit devlog: ' + (editingEntry?.title ?? '')"
+        titleId="edit-devlog-title"
+        submitLabel="Save"
+        [formError]="editFormError"
+        [submitDisabled]="editForm.invalid || submitting || !editHasChanges"
+        (closed)="closeEditModal()"
+        (submitted)="saveEdit()"
+    >
+        <div class="mb-3">
+            <label class="form-label" for="edit-title">Title</label>
+            <input
+                id="edit-title"
+                class="form-control"
+                formControlName="title"
+            />
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="edit-body">Body</label>
+            <textarea
+                id="edit-body"
+                class="form-control"
+                rows="6"
+                formControlName="body"
+            ></textarea>
+        </div>
+        <div class="form-check">
+            <input
+                id="edit-published"
+                class="form-check-input"
+                type="checkbox"
+                formControlName="is_published"
+            />
+            <label class="form-check-label" for="edit-published"
+                >Published</label
+            >
+        </div>
+    </app-admin-form-modal>
+</div>

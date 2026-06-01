@@ -1,0 +1,20 @@
+<div *ngIf="loading" class="alert alert-secondary" role="status">Loading…</div>
+<div *ngIf="errorMessage" class="alert alert-danger" role="alert">
+    {{ errorMessage }}
+</div>
+<div
+    *ngIf="!loading && !errorMessage && isEmpty"
+    class="empty-state text-center py-5 px-3 border rounded"
+    role="status"
+>
+    <p class="empty-state__message mb-0">{{ emptyMessage }}</p>
+    <button
+        type="button"
+        class="btn btn-primary btn-sm mt-3"
+        *ngIf="emptyActionLabel"
+        (click)="emptyAction.emit()"
+    >
+        {{ emptyActionLabel | titlecase }}
+    </button>
+</div>
+<ng-content></ng-content>

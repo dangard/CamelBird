@@ -2,8 +2,22 @@
   z-index: 1020;
 }
 
-footer {
-  text-align: center;
+footer.footer-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-align: left;
   line-height: 20px;
-  padding: 5px 5px 10px 0;
+  padding: 5px 12px 10px;
+}
+
+.footer-admin-link {
+  color: inherit;
+  font-size: 1.1rem;
+  line-height: 1;
+  text-decoration: none;
+}
+
+.footer-admin-link:hover {
+  opacity: 0.75;
 }

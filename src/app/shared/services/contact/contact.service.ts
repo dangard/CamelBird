@@ -17,7 +17,7 @@ export class ContactService {
 
     public sendContact(payload: ContactRequest): Observable<ContactResponse> {
         return this.http.post<ContactResponse>(
-            environment.apiServerUrl + APP_CONSTANTS.OPERATIONS.CONTACT.CREATE,
+            environment.apiUrl + APP_CONSTANTS.OPERATIONS.CONTACT.CREATE,
             payload,
         );
     }

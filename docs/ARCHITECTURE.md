@@ -14,7 +14,7 @@
 
 ## Executive summary
 
-CamelBird is a small **Angular 20 standalone single-page application** for a personal site (accomplishments, interests, dev blog, contact, branding). The build emits a static bundle to **`dist/CamelBird`** (application builder; browser assets at the project output root) and is served by **Apache** using a `.htaccess` that forces HTTPS and routes unknown paths back to `index.html` for client-side routing. Dynamic features call an external REST API at **`environment.apiServerUrl`** (dev blog list/create and contact form submit); configuration and feature flags ship from **`.env` → `environment.generated.ts`** at build/serve time (defaults match `https://api.camelbird.com` for production bundles when unset); that backend is not in this repository. The codebase uses **Jest** unit tests and **local quality gates** (`npm run verify`: `lint`, production `build`, `test`). Application repos intentionally **do not use GitHub Actions**. Remaining architectural watch items include **the UI feature flag (`enableDevlogCreate`) treated as UX-only** (authorization belongs on `api.camelbird.com`). Client-side **logging + HTTP failure interception** and **inline form errors** are in place; optional vendor analytics or CSP tightening remains host-dependent—see **`docs/APACHE_CONFIG.md`**.
+CamelBird is a small **Angular 20 standalone single-page application** for a personal site (accomplishments, interests, dev blog, contact, branding) plus a **JWT-protected admin area** (users and devlog CRUD). The build emits a static bundle to **`dist/CamelBird`** and is served by **Apache** with SPA fallback. Dynamic features call **CamelBird-API** at **`environment.apiUrl`** (from **`API_URL`** in `.env`); admin mutations require Bearer tokens. Local quality gates: **`npm run verify`**.
 
 ## Context
 
@@ -41,7 +41,7 @@ flowchart LR
 - **Build constraints (`angular.json`)**:
   - Production budgets: initial bundle warning **1mb** / error **1.25mb**; per-component-style warning 2kb / error 4kb.
   - **Strict mode enabled** at the Angular project level.
-  - **Environment**: **`scripts/generate-environment.mjs`** writes **`src/environments/environment.generated.ts`** from **`.env`** / **`.env.*`** (**`NG_APP_*`** vars; see **`.env.example`**). **`environment.ts`** re-exports generated values; **`production`** is set from the generator mode (**development** vs **production**) — not stored in `.env`.
+  - **Environment**: **`scripts/generate-environment.mjs`** writes **`environment.generated.ts`** from **`.env`** / **`.env.*`** (**`API_URL`** only; see **`.env.example`**).
 - **Hosting constraint**: Apache with `.htaccess`; rewrites assume a single-page fallback to `index.html`.
 - **No explicit non-functional requirements** documented in repo.
 
@@ -136,33 +136,35 @@ sequenceDiagram
 
 ### Routing and shell
 
-- **`main.ts`** calls `bootstrapApplication(AppComponent, …)` with `provideRouter(routes)`, **`provideHttpClient(withFetch(), withInterceptors([httpErrorInterceptor]))`**.
-- **`app.routes.ts`** declares 5 routes plus a default redirect:
-  - `''` → redirect `/accomplishments`
-  - `accomplishments`, `interests`, `devblog`, `camelbird`, `contact`
+- **`main.ts`** calls `bootstrapApplication(AppComponent, …)` with `provideRouter(routes)`, **`provideHttpClient(withFetch(), withInterceptors([httpErrorInterceptor, tokenRefreshInterceptor, authInterceptor]))`**.
+- **`app.routes.ts`** declares public routes plus **`/admin/*`** (login, dashboard, users, devlogs). Admin child routes use **`authGuard`**; login uses **`guestGuard`**.
 - **Routed/feature components** are **`standalone: true`**; there is no `AppModule`.
 - **`AppComponent`** holds layout (header + `RouterOutlet` + footer); footer year computed from `new Date()`.
-- **`HeaderComponent`** reads `environment.enableDevBlog` to decide whether the dev blog nav link is shown.
-- **`FooterComponent`** — presentational.
+- **`HeaderComponent`** — always shows Dev Blog nav link.
+- **`FooterComponent`** — copyright plus gear icon linking to **`/admin/login`** (admin entry is footer-only).
 
 ### Pages
 
 - **`AccomplishmentsComponent`, `InterestsComponent`, `CamelbirdComponent`** — static content; Accomplishments links to `/contact?subject=resume-request` instead of a mailto address.
 - **`ContactComponent`** — contact page shell with breadcrumb/hero layout; embeds **`ContactFormComponent`**.
-- **`DevblogComponent`** — wraps the dev blog feature; reads `environment.enableDevlogCreate` to enable/disable the creator UI.
+- **`DevblogComponent`** — public read-only dev blog list (create moved to admin).
 
 ### Dev blog feature
 
-- **`DevblogListComponent`** — lists posts, subscribes to `EventListenerService.events$` (filtered devblog `created` events) to refresh after a successful create, formats dates via **date-fns**, owns local `loading` / **`errorMessage`** for UI alerts (`takeUntilDestroyed` for subscriptions); uses **`LoggerService`** on failures.
-- **`DevblogCreatorComponent`** — `ReactiveForms` form (`title`, `body` required); hard-codes `user = "dangard"`; calls **`DevblogService.createDevBlog`** (returns **`Observable`**) and surfaces **`submitError`** inline on HTTP failure.
-- **`DevblogService`** (`providedIn: 'root'`) — single HTTP gateway for the feature.
-  - **Signatures**: typed payloads via `src/app/shared/models/devblog-api.types.ts` — e.g. `getDevBlogs(): Observable<DevBlogListPayload[]>`, **`createDevBlog(...) Observable<CreateDevBlogResponse>`** with **`tap`** for **`log_id`** + **`EventListenerService.emit`**.
-  - **Dependencies**: `HttpClient`, `AppConstants`, `EventListenerService`, `environment`.
-  - **API contract observed**:
-    - `GET {apiServerUrl}/devlogs` → list
-    - `POST {apiServerUrl}/devlog` → `{ log_id }`
-- **`EventListenerService`** — typed in-app events: `Subject<CamelBirdAppEvent>` exposed as `events$`, `emit(...)`. Payloads are a discriminated union (`src/app/shared/models/app-events.types.ts`); extend the union as new domains appear.
-- **`AppConstants`** — injectable REST path fragments (`OPERATIONS`); no runtime env reads.
+- **`DevblogListComponent`** — lists published posts via anonymous **`GET /devlogs`**; formats dates via **date-fns**.
+- **`DevblogService`** — public **`getDevBlogs()`** only.
+- **`DevblogAdminService`** — authenticated CRUD for admin UI (`POST/PATCH/DELETE /devlogs`).
+
+### Admin feature
+
+- **`AuthService`**, **`TokenStore`**, **`authGuard`**, **`guestGuard`**, **`authInterceptor`**, **`tokenRefreshInterceptor`** — JWT session in **`sessionStorage`**; refresh on **401** for protected API calls.
+- **`AdminShellComponent`** — central **`router-outlet`** plus right-hand nav (Dashboard, Users, Devlogs, Sign out).
+- **`AdminUsersComponent`**, **`AdminDevlogsComponent`** — in-place CRUD (no full page reload); controls gated by **`role-capabilities.ts`**.
+- **CamelBird-API** (separate repo) enforces RBAC on **`/users`** and mutating **`/devlogs`** verbs.
+
+### Configuration
+
+- **`.env` / `.env.development` / `.env.production`**: **`API_URL`** → **`environment.apiUrl`** via **`scripts/generate-environment.mjs`** (sole bundle env key).
 
 ### Contact feature
 
@@ -170,7 +172,7 @@ sequenceDiagram
 - **`ContactService`** (`providedIn: 'root'`) — POST gateway for contact submissions.
   - **Signatures**: typed payloads via `src/app/shared/models/contact-api.types.ts` — `sendContact(...): Observable<ContactResponse>`.
   - **API contract observed**:
-    - `POST {apiServerUrl}/contact` → `{ message }` on success
+    - `POST {apiUrl}/contact` → `{ message }` on success
 - **Backend (external `api.camelbird.com`)**: validates input, applies honeypot silent-success and IP rate limiting, sends mail via **PHPMailer/SMTP** (`CONTACT_SMTP_*` env vars). CORS allowlist includes `https://www.camelbird.com`.
 
 ### Client observability

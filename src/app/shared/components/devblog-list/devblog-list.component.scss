@@ -5,6 +5,16 @@
   height: 4rem;
 }
 
+.empty-state {
+  background-color: colors.$palette-ivory;
+  border-color: rgba(67, 58, 50, 0.12) !important;
+  color: colors.$palette-taupe;
+}
+
+.empty-state__message {
+  font-size: 1rem;
+}
+
 .devblog-card {
   background-color: colors.$surface-lifted;
   border: 1px solid rgba(67, 58, 50, 0.12);
