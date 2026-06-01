@@ -97,6 +97,35 @@ function assertDist() {
     }
 }
 
+function assertProductionApiUrl() {
+    const forbidden = "api.camelbird.local";
+    const hits = [];
+
+    for (const file of walkLocal(distDir)) {
+        if (!file.endsWith(".js")) continue;
+        const content = readFileSync(join(distDir, file), "utf8");
+        if (content.includes(forbidden)) {
+            hits.push(file);
+        }
+    }
+
+    if (hits.length === 0) return;
+
+    console.error(
+        "Production deploy blocked: dist bundle references development API URL.",
+    );
+    console.error(`Found "${forbidden}" in:`);
+    for (const file of hits) {
+        console.error(`  - ${file}`);
+    }
+    console.error("");
+    console.error("Fix:");
+    console.error("  1. Copy .env.production.example → .env.production");
+    console.error("  2. Set API_URL=https://api.camelbird.com");
+    console.error("  3. Run npm run build (not build:local), then deploy again");
+    process.exit(1);
+}
+
 function walkLocal(dir, base = dir) {
     const files = [];
     for (const name of readdirSync(dir)) {
@@ -244,6 +273,7 @@ async function main() {
     }
 
     assertDist();
+    assertProductionApiUrl();
 
     const localFiles = walkLocal(distDir);
     const localSet = new Set(localFiles);

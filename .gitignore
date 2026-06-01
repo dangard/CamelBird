@@ -47,6 +47,7 @@ testem.log
 .env.*
 !.env.example
 !.env.deploy.example
+!.env.production.example
 .env.deploy
 
 # Generated from .env at build-time
