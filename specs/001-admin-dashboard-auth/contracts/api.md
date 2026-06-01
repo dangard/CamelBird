@@ -56,6 +56,7 @@ Response **401**: `{ "message": string }`
 | GET | `/users/{id}` | `users.read` | admin, maintainer, read_only |
 | POST | `/users` | `users.create` | admin only |
 | PATCH | `/users/{id}` | `users.patch` | admin (all fields); maintainer (profile only) |
+| DELETE | `/users/{id}` | `users.delete` | admin only |
 
 **UserPublic** (list/get/create/patch response):
 
@@ -75,7 +76,7 @@ Response **401**: `{ "message": string }`
 
 **UserPatchRequest** (PATCH): at least one field — `username`, `email`, `first_name`, `last_name`, `password` (admin), `role` (admin), `is_active` (admin).
 
-Status codes: **201** create, **200** patch, **401**, **403**, **404**, **409** (duplicate email), **422** validation.
+Status codes: **201** create, **200** patch, **204** delete, **401**, **403**, **404**, **409** (duplicate email), **422** validation.
 
 ## Devlogs
 

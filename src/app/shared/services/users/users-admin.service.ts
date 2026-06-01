@@ -43,4 +43,10 @@ export class UsersAdminService {
             payload,
         );
     }
+
+    delete(id: number): Observable<void> {
+        return this.http.delete<void>(
+            this.base(APP_CONSTANTS.OPERATIONS.USERS.BY_ID(id)),
+        );
+    }
 }

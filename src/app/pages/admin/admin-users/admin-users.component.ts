@@ -109,6 +109,10 @@ export class AdminUsersComponent implements OnInit {
         return can(this.role, "users.patch");
     }
 
+    get canDelete(): boolean {
+        return can(this.role, "users.delete");
+    }
+
     get isAdmin(): boolean {
         return this.role === "admin";
     }
@@ -283,6 +287,35 @@ export class AdminUsersComponent implements OnInit {
                     err instanceof HttpErrorResponse
                         ? this.errors.mapError(err, "Could not deactivate user")
                         : "Could not deactivate user";
+            },
+        });
+    }
+
+    deleteUser(user: UserRecord): void {
+        if (!this.canDelete || this.submitting) return;
+
+        if (
+            !window.confirm(
+                `Delete user "${user.username}"? This cannot be undone.`,
+            )
+        ) {
+            return;
+        }
+
+        this.submitting = true;
+        this.actionError = null;
+        this.usersService.delete(user.id).subscribe({
+            next: () => {
+                this.submitting = false;
+                if (this.editingUser?.id === user.id) this.closeEditModal();
+                this.users = this.users.filter((row) => row.id !== user.id);
+            },
+            error: (err: unknown) => {
+                this.submitting = false;
+                this.actionError =
+                    err instanceof HttpErrorResponse
+                        ? this.errors.mapError(err, "Could not delete user")
+                        : "Could not delete user";
             },
         });
     }

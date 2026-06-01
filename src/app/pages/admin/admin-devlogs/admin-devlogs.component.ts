@@ -233,13 +233,23 @@ export class AdminDevlogsComponent implements OnInit {
     deleteDevlog(entry: DevBlogListItem): void {
         if (!this.canDelete || this.submitting) return;
 
+        if (
+            !window.confirm(
+                `Delete devlog "${entry.title}"? This cannot be undone.`,
+            )
+        ) {
+            return;
+        }
+
         this.submitting = true;
         this.actionError = null;
         this.devlogsService.delete(entry.id).subscribe({
             next: () => {
                 this.submitting = false;
                 if (this.editingEntry?.id === entry.id) this.closeEditModal();
-                this.devlogs = this.devlogs.filter((row) => row.id !== entry.id);
+                this.devlogs = this.devlogs.filter(
+                    (row) => row.id !== entry.id,
+                );
             },
             error: (err: unknown) => {
                 this.submitting = false;

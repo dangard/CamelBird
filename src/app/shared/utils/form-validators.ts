@@ -9,7 +9,12 @@ export function optionalMinLength(
         if (!value) return null;
         return value.length >= min
             ? null
-            : { minlength: { requiredLength: min, actualLength: value.length } };
+            : {
+                  minlength: {
+                      requiredLength: min,
+                      actualLength: value.length,
+                  },
+              };
     };
 }
 

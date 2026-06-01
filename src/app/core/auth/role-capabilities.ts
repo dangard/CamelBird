@@ -6,6 +6,7 @@ const PERMISSIONS: Record<StaffRole, readonly string[]> = {
         "users.read",
         "users.create",
         "users.patch",
+        "users.delete",
         "devlogs.list",
         "devlogs.create",
         "devlogs.patch",

@@ -68,28 +68,32 @@
         (closed)="closeCreateModal()"
         (submitted)="createDevlog()"
     >
-    <div class="mb-3">
-        <label class="form-label" for="devlog-title">Title</label>
-        <input
-            id="devlog-title"
-            class="form-control"
-            formControlName="title"
-        />
-    </div>
-    <div class="mb-3">
-        <label class="form-label" for="devlog-body">Body</label>
-        <textarea
-            id="devlog-body"
-            class="form-control"
-            rows="6"
-            formControlName="body"
-        ></textarea>
-    </div>
-    <div class="mb-0">
-        <label class="form-label" for="devlog-user">Author</label>
-        <input id="devlog-user" class="form-control" formControlName="user" />
-    </div>
-</app-admin-form-modal>
+        <div class="mb-3">
+            <label class="form-label" for="devlog-title">Title</label>
+            <input
+                id="devlog-title"
+                class="form-control"
+                formControlName="title"
+            />
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="devlog-body">Body</label>
+            <textarea
+                id="devlog-body"
+                class="form-control"
+                rows="6"
+                formControlName="body"
+            ></textarea>
+        </div>
+        <div class="mb-0">
+            <label class="form-label" for="devlog-user">Author</label>
+            <input
+                id="devlog-user"
+                class="form-control"
+                formControlName="user"
+            />
+        </div>
+    </app-admin-form-modal>
 </div>
 
 <div [formGroup]="editForm">
@@ -103,27 +107,33 @@
         (closed)="closeEditModal()"
         (submitted)="saveEdit()"
     >
-    <div class="mb-3">
-        <label class="form-label" for="edit-title">Title</label>
-        <input id="edit-title" class="form-control" formControlName="title" />
-    </div>
-    <div class="mb-3">
-        <label class="form-label" for="edit-body">Body</label>
-        <textarea
-            id="edit-body"
-            class="form-control"
-            rows="6"
-            formControlName="body"
-        ></textarea>
-    </div>
-    <div class="form-check">
-        <input
-            id="edit-published"
-            class="form-check-input"
-            type="checkbox"
-            formControlName="is_published"
-        />
-        <label class="form-check-label" for="edit-published">Published</label>
-    </div>
-</app-admin-form-modal>
+        <div class="mb-3">
+            <label class="form-label" for="edit-title">Title</label>
+            <input
+                id="edit-title"
+                class="form-control"
+                formControlName="title"
+            />
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="edit-body">Body</label>
+            <textarea
+                id="edit-body"
+                class="form-control"
+                rows="6"
+                formControlName="body"
+            ></textarea>
+        </div>
+        <div class="form-check">
+            <input
+                id="edit-published"
+                class="form-check-input"
+                type="checkbox"
+                formControlName="is_published"
+            />
+            <label class="form-check-label" for="edit-published"
+                >Published</label
+            >
+        </div>
+    </app-admin-form-modal>
 </div>

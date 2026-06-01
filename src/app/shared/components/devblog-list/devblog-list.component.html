@@ -8,8 +8,14 @@
     </div>
 </div>
 
-<div *ngIf="!loading && !errorMessage && devBlogs.length === 0" class="empty-state text-center py-5 px-3 border rounded" role="status">
-    <p class="empty-state__message mb-0">No dev blog posts yet. Check back soon.</p>
+<div
+    *ngIf="!loading && !errorMessage && devBlogs.length === 0"
+    class="empty-state text-center py-5 px-3 border rounded"
+    role="status"
+>
+    <p class="empty-state__message mb-0">
+        No dev blog posts yet. Check back soon.
+    </p>
 </div>
 
 <div *ngIf="!loading && devBlogs.length">

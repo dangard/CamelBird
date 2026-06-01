@@ -65,4 +65,15 @@ describe("UsersAdminService", () => {
         expect(req.request.method).toBe("PATCH");
         req.flush({ ...userPublic, is_active: false });
     });
+
+    it("delete() sends DELETE", () => {
+        const deleteUrl =
+            environment.apiUrl + APP_CONSTANTS.OPERATIONS.USERS.BY_ID(2);
+
+        service.delete(2).subscribe();
+
+        const req = httpMock.expectOne(deleteUrl);
+        expect(req.request.method).toBe("DELETE");
+        req.flush(null);
+    });
 });
