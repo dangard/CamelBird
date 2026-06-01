@@ -29,7 +29,7 @@
             type="submit"
             [disabled]="form.invalid || submitting"
         >
-            {{ submitting ? "Signing in…" : "Sign in" }}
+            {{ (submitting ? "Signing in…" : "Sign in") | titlecase }}
         </button>
     </form>
 </div>

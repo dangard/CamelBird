@@ -1,4 +1,4 @@
-import { NgIf } from "@angular/common";
+import { NgIf, TitleCasePipe } from "@angular/common";
 import { HttpErrorResponse } from "@angular/common/http";
 import { Component, inject } from "@angular/core";
 import {
@@ -16,7 +16,7 @@ import { AuthService } from "../../../shared/services/auth/auth.service";
 @Component({
     selector: "app-admin-login",
     standalone: true,
-    imports: [ReactiveFormsModule, NgIf],
+    imports: [ReactiveFormsModule, NgIf, TitleCasePipe],
     templateUrl: "./admin-login.component.html",
     styleUrls: ["./admin-login.component.scss"],
 })

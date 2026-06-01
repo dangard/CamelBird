@@ -10,7 +10,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h2 class="modal-title h5 mb-0" [id]="titleId">
-                        {{ title }}
+                        {{ title | titlecase }}
                     </h2>
                     <button
                         type="button"
@@ -42,7 +42,7 @@
                             class="btn btn-primary"
                             [disabled]="submitDisabled"
                         >
-                            {{ submitLabel }}
+                            {{ submitLabel | titlecase }}
                         </button>
                     </div>
                 </form>

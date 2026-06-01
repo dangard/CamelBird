@@ -14,7 +14,7 @@
         *ngIf="emptyActionLabel"
         (click)="emptyAction.emit()"
     >
-        {{ emptyActionLabel }}
+        {{ emptyActionLabel | titlecase }}
     </button>
 </div>
 <ng-content></ng-content>

@@ -1,10 +1,10 @@
-import { NgIf } from "@angular/common";
+import { NgIf, TitleCasePipe } from "@angular/common";
 import { Component, EventEmitter, Input, Output } from "@angular/core";
 
 @Component({
     selector: "app-crud-list-panel",
     standalone: true,
-    imports: [NgIf],
+    imports: [NgIf, TitleCasePipe],
     templateUrl: "./crud-list-panel.component.html",
     styleUrls: ["./crud-list-panel.component.scss"],
 })

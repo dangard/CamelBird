@@ -1,4 +1,4 @@
-import { AsyncPipe, NgIf } from "@angular/common";
+import { AsyncPipe, NgIf, TitleCasePipe } from "@angular/common";
 import { Component, inject } from "@angular/core";
 import { RouterLink, RouterLinkActive, RouterOutlet } from "@angular/router";
 
@@ -8,7 +8,14 @@ import { AuthService } from "../../../shared/services/auth/auth.service";
 @Component({
     selector: "app-admin-shell",
     standalone: true,
-    imports: [RouterOutlet, RouterLink, RouterLinkActive, AsyncPipe, NgIf],
+    imports: [
+        RouterOutlet,
+        RouterLink,
+        RouterLinkActive,
+        AsyncPipe,
+        NgIf,
+        TitleCasePipe,
+    ],
     templateUrl: "./admin-shell.component.html",
     styleUrls: ["admin-shell.component.scss"],
 })

@@ -6,6 +6,6 @@
         *ngIf="showCreate && createLabel"
         (click)="create.emit()"
     >
-        {{ createLabel }}
+        {{ createLabel | titlecase }}
     </button>
 </div>

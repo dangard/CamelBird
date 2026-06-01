@@ -1,10 +1,10 @@
-import { NgIf } from "@angular/common";
+import { NgIf, TitleCasePipe } from "@angular/common";
 import { Component, EventEmitter, Input, Output } from "@angular/core";
 
 @Component({
     selector: "app-admin-page-header",
     standalone: true,
-    imports: [NgIf],
+    imports: [NgIf, TitleCasePipe],
     templateUrl: "./admin-page-header.component.html",
     styleUrls: ["./admin-page-header.component.scss"],
 })

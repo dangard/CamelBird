@@ -1,4 +1,4 @@
-import { NgIf } from "@angular/common";
+import { NgIf, TitleCasePipe } from "@angular/common";
 import {
     Component,
     EventEmitter,
@@ -10,7 +10,7 @@ import {
 @Component({
     selector: "app-admin-form-modal",
     standalone: true,
-    imports: [NgIf],
+    imports: [NgIf, TitleCasePipe],
     templateUrl: "./admin-form-modal.component.html",
     styleUrls: ["./admin-form-modal.component.scss"],
 })
